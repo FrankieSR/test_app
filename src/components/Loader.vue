@@ -1,30 +1,47 @@
 <template>
-	<div>
-    	<div>
-				<div class="loader"></div>
-        </div>
-    </div>
-
+  <div class="loader-wrapper">
+<div class="lds-dual-ring"></div>
+  </div>
 </template>
 
 <script>
 export default {
-	name: 'Loader'
+  name: "Loader"
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-.loader {
-	width: 100vw;
-	height: 100vh;
-	background: rgba(200, 200, 200, 0.7);
+.loader-wrapper {
 	position: absolute;
-	left: 0;
-	top: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: red;
+	width: 100%;
+	height: 100%;
 }
+.lds-dual-ring {
+	position: absolute;
+	top: 40%;
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  border-color: rgb(219, 11, 11) transparent rgb(223, 18, 18) transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 </style>

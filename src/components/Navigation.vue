@@ -62,7 +62,7 @@ a {
 
 .navigation {
   background: #7babed;
-  min-height: 50px;
+  min-height: 70px;
   font-weight: 600;
   color: #fff;
   text-align: center;
@@ -70,8 +70,11 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  box-shadow: 0 3px 3px grey;
+  box-shadow: 0 7px 0 #3C93D5;
   margin-bottom: 20px;
+  border-radius: 10px;
+  margin: 0 auto;
+  width: 96%;
 }
 
 .logout {

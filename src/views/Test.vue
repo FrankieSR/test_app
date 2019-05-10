@@ -210,7 +210,10 @@ export default {
 	this.sortRandomQuestions();
 	console.log(this.RandomSortedQuestionList);
 	// window.onbeforeunload = function(e) {
-	// 	localStorage.setItem("reloadPage", true);
+  // 	localStorage.setItem("reloadPage", true);
+    // if (this.$router.go(this.$router.currentRoute)) {
+    //   this.$router.push("/");
+    // }
 	// };
   }
 };
@@ -219,9 +222,6 @@ export default {
 <style lang="less">
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   h1 {
     padding: 0;

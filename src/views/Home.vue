@@ -1,9 +1,6 @@
 <template>
   <div>
     <Navigation/>
-    <div class="div" v-if="loading">
-      <Loader/>
-    </div>
     <div class="home">
       <div v-if="!isAuthenticated">
         <h1>Sertification</h1>
