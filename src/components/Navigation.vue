@@ -6,12 +6,12 @@
   <div class="navigation">
     <div class="logo-wrapper">
       <router-link to="/">
-        <span>Sertification</span>
+        <span>Сertification</span>
       </router-link>
     </div>
 
     <div v-if="isProfileLoaded">
-      <router-link to="/account">Hello {{name}}</router-link>
+      <router-link to="/account">Hello {{isUserName()}}</router-link>
     </div>
     <div class="auth-button-wrapper">
       <div v-if="isAuthenticated" @click="logout">
@@ -38,9 +38,14 @@ export default {
   },
   methods: {
     logout: function() {
-      this.$store
-        .dispatch("AUTH_LOGOUT")
-        .then(() => this.$router.push("/login"));
+      this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
+    },
+    isUserName: function() {
+      if (localStorage.getItem("username")) {
+        return localStorage.getItem("username");
+      } else {
+        return "_User";
+      }
     }
   },
   computed: {
@@ -61,20 +66,16 @@ a {
 }
 
 .navigation {
-  background: #7babed;
-  min-height: 70px;
-  font-weight: 600;
-  color: #fff;
-  text-align: center;
+  background: #00bd85;
+  min-height: 30px;
+  border-bottom-left-radius: 35px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  box-shadow: 0 7px 0 #3C93D5;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  margin: 0 auto;
-  width: 96%;
+  padding: 0 35px;
+  font-weight: 700;
+  font-size: 20px;
+  align-items: center;
+  font-family: "Share Tech Mono", monospace;
 }
 
 .logout {

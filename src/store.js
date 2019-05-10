@@ -35,7 +35,6 @@ export default new Vuex.Store({
     },
     SET_TEST: (state, changedTest) => {
       state.questionList = changedTest;
-      console.log(state.questionList);
     }
   },
   actions: {
@@ -51,19 +50,16 @@ export default new Vuex.Store({
           .then(resp => {
             if (resp.data.isAuth !== "Denied" && resp.data.token !== "") {
               localStorage.setItem("user-token", resp.data.token);
-              localStorage.setItem("username", resp.data.name);
               commit("AUTH_SUCCESS", resp);
               resolve(resp);
             } else {
               commit("AUTH_ERROR", resp.isAuth);
               localStorage.removeItem("user-token");
-              localStorage.removeItem("username");
             }
           })
           .catch(err => {
             commit("AUTH_ERROR", err);
             localStorage.removeItem("user-token");
-            localStorage.removeItem("username");
             reject(err);
           });
       });

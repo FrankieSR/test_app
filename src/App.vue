@@ -14,13 +14,8 @@ export default {
 
 
 <style lang="less">
-@blue: #7babed;
-@rouse: #f6c2d8;
-@yellow: #fcebbf;
-@grey: #ced6e3;
-
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

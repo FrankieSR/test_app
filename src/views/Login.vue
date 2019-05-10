@@ -1,29 +1,43 @@
 <template>
-  <div class="login-wrapper">
-    <p>
-      Please enter your name and
-      <strong>password that was provided to you</strong>
-    </p>
-    <form class="login" @submit.prevent="login">
-      <div class="input-wrapper">
-        <label for="username">Your name</label>
-        <input required v-model="username" id="username" type="text" placeholder="Username">
-        <label for="password">Password</label>
-        <input required v-model="password" id="password" type="password" placeholder="Password">
-      </div>
-      <div class="buuton-wrapper">
-        <div v-if="loading">
-          <div class="div" v-if="loading">
-            <Loader/>
+  <div class="login-page">
+    <div class="login-wrapper">
+      <p>
+        Please enter your name and
+        <br>
+        <strong>password that was provided to you</strong>
+      </p>
+      <form class="login" @submit.prevent="login">
+        <div class="input-wrapper">
+          <label for="username">Your name</label>
+          <div class="input-group">
+            <input required v-model="username" id="username" type="text" placeholder="Your Name">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <label for="password">Password</label>
+          <div class="input-group">
+            <input required v-model="password" id="password" type="password" placeholder="Password">
+            <i class="fas fa-lock"></i>
+          </div>
+          <div class="input-group">
+            <label for="save_customer">Save name?</label>
+            <input type="checkbox" @click="saveCustomer" v-model="ifSave" id="save_customer">
           </div>
         </div>
-        <div v-else>
-          <button type="submit">Login</button>
+        <div class="buton-wrapper">
+          <div v-if="loading">
+            111111111111111111
+            <div class="div" v-if="loading">
+              <Loader/>
+            </div>
+          </div>
+          <div v-else>
+            <button type="submit">Log In</button>
+          </div>
         </div>
+      </form>
+      <div v-show="error">
+        <span class="error">Error access</span>
       </div>
-    </form>
-    <div v-show="error">
-      <span class="error">Error access</span>
     </div>
   </div>
 </template>
@@ -38,7 +52,8 @@ export default {
   data: function() {
     return {
       username: "",
-      password: ""
+      password: "",
+      ifSave: true
     };
   },
   components: {
@@ -49,8 +64,15 @@ export default {
       const { username, password } = this;
 
       this.$store.dispatch("AUTH_REQUEST", { username, password }).then(() => {
-        this.$router.push("/");
+        if (this.ifSave) {
+          localStorage.setItem("username", this.username);
+        }
+        this.$router.push("/choise-certification");
       });
+    },
+    saveCustomer: function() {
+      console.log(this.ifSave);
+      this.ifSave = !this.ifSave;
     }
   },
   computed: {
@@ -60,76 +82,73 @@ export default {
     },
     loading: function() {
       return this.authStatus === "loading";
-    },
+    }
   }
 };
 </script>
 
 
 <style lang="less" scoped>
+
 .login-wrapper {
-  width: 40vw;
-  min-height: 350px;
-  background: #f6c2d8;
-  padding: 25px 15px;
-  border-radius: 10px;
-  margin: 0 auto;
-  box-shadow: 0 7px 0 rgb(187, 123, 155);
+  border: 1px solid #00bd85;
+  margin: 35px 0 10px;
+  width: 320px;
+  margin: 30px auto 0;
+  padding: 25px;
 
   p {
-    font-size: 120%;
-
-    strong {
-      font-size: 122%;
-    }
+    text-align: center;
   }
 
   .input-wrapper {
     display: flex;
-    align-items: center;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 
     label {
-      font-weight: 700;
-      font-size: 120%;
-      padding: 3px;
+      font-family: "Share Tech Mono", monospace;
     }
 
-    input {
-      font-size: 120%;
-      border-radius: 8px;
-      padding: 10px;
-      border: none;
-      margin-bottom: 15px;
-      width: 60%;
+    i {
+      position: relative;
+      top: 5px;
+      margin-left: 8px;
+      color: #20a8f9;
     }
+  }
+
+  input {
+    margin: 0 0 10px;
+    padding: 10px 15px;
+    border: none;
+    border-bottom: 2px solid #20a8f9;
   }
 
   button {
-    border-radius: 10px;
+    display: block;
+    width: 200px;
+    height: 40px;
     border: none;
-    font-size: 120%;
-    font-weight: 700;
-    padding: 10px 15px;
     cursor: pointer;
-    transition: 0.2s;
-    background: #7babed;
-    box-shadow: 0 3px 0 #3c93d5;
-    color: #fff;
+    background: #d9d9d9;
+    border-right: 7px solid #fdc730;
+    border-bottom: 1px solid #fdc730;
+    font-weight: 700;
+    font-size: 20px;
+    font-family: "Share Tech Mono", monospace;
+    transition: 0.3s;
+    margin: 10px auto 20px auto;
+    text-align: center;
+    position: relative;
+    right: 10px;
 
     &:hover {
-      box-shadow: 0 8px 0 #3c93d5;
-      transform: translateY(-6px);
+      border-bottom: 15px solid #20a8f9;
+      border-right: 15px solid #fdc730;
+      height: 50px;
     }
-  }
-
-  .error {
-    font-size: 140%;
-    color: red;
-  }
-
-  .buuton-wrapper {
-    position: relative;
   }
 }
 </style>
