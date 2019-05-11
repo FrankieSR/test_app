@@ -14,7 +14,9 @@ export default new Vuex.Store({
       bestResult: ""
     },
     questionList: "",
-    choiseSertificationTest: ""
+    choiseSertificationTest: "",
+    randomQuestions: true,
+    randomOptions: true
   },
   mutations: {
     AUTH_REQUEST: state => {
@@ -35,6 +37,15 @@ export default new Vuex.Store({
     },
     SET_TEST: (state, changedTest) => {
       state.questionList = changedTest;
+    },
+    SORT_QUESTIONS: (state) => {
+      state.randomQuestions = !state.randomQuestions;
+    },
+    SORT_OPTIONS: (state) => {
+      state.randomOptions = !state.randomOptions;
+    },
+    SET_NAME: (state, name) => {
+      state.profile.username = name;
     }
   },
   actions: {
@@ -50,6 +61,7 @@ export default new Vuex.Store({
           .then(resp => {
             if (resp.data.isAuth !== "Denied" && resp.data.token !== "") {
               localStorage.setItem("user-token", resp.data.token);
+              commit("SET_NAME", resp.data.name);
               commit("AUTH_SUCCESS", resp);
               resolve(resp);
             } else {
@@ -84,6 +96,15 @@ export default new Vuex.Store({
       // if (testName == "asociate") {
       //   commit("SET_TEST", frontend);
       // }
+    },
+    SORT_QUESTIONS: ({ commit }) => {
+      commit("SORT_QUESTIONS");
+    },
+    SORT_OPTIONS: ({ commit }) => {
+      commit("SORT_OPTIONS");
+    },
+    SET_NAME: ({ commit }, name) => {
+      commit("SET_NAME", name);
     }
   },
   getters: {
@@ -92,6 +113,8 @@ export default new Vuex.Store({
     isProfileLoaded: state => !!state.profile.username,
     getProfile: state => state.profile,
     getQuestionList: state => state.questionList,
-    getTestName: state => state.choiseSertificationTest
+    getTestName: state => state.choiseSertificationTest,
+    getQuestionSort: state => state.randomQuestions,
+    getOptionsSort: state => state.randomOptions
   }
 });

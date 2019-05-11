@@ -24,14 +24,9 @@
           </div>
         </div>
         <div class="buton-wrapper">
-          <div v-if="loading">
-            111111111111111111
-            <div class="div" v-if="loading">
-              <Loader/>
-            </div>
-          </div>
+          <Loader v-if="loading"/>
           <div v-else>
-            <button type="submit">Log In</button>
+            <button type="submit">Log In <i class="fas fa-door-closed"></i></button>
           </div>
         </div>
       </form>

@@ -1,6 +1,9 @@
 <template>
   <div class="home-page">
     <Navigation/>
+    <div v-if="isVisible">
+      <Loader/>
+    </div>
     <div class="home">
       <div v-if="!isAuthenticated">
         <h1>
@@ -14,8 +17,14 @@
         <div class="login-wrapper">
           <div>
             <button class="open-login" @click="openLogin()">
-              <span v-if="!isDisplay">Open Log In</span>
-              <span v-else>Close</span>
+              <span v-if="!isDisplay">
+                Open Log In
+                <i class="fas fa-caret-up"></i>
+              </span>
+              <span v-else>
+                Close
+                <i class="fas fa-caret-down"></i>
+              </span>
             </button>
           </div>
           <div v-show="isDisplay" ref="login-block">
@@ -24,9 +33,16 @@
         </div>
       </div>
       <div class v-else>
-        <h1>What’s up!<br/> <span class="name">{{isUserName()}} :)</span></h1>   
+        <h1>
+          What’s up!
+          <br>
+          <span class="name">{{isUserName()}} :)</span>
+        </h1>
         <h2>Choose a test that you want to try your hand at:</h2>
-        <button class="goToChoiseCert open-login" @click="goToSertific">Go To Choise Test</button>
+        <button class="goToChoiseCert open-login" @click="goToSertific">
+          Go To Choise Test
+          <i class="fas fa-caret-right"></i>
+        </button>
         <!-- нужно добавить отображение если авторизирован -->
         <!-- можно добавить логаут -->
       </div>
@@ -51,7 +67,8 @@ export default {
   name: "home",
   data: function() {
     return {
-      isDisplay: false
+      isDisplay: false,
+      isVisible: false
     };
   },
   computed: {
@@ -72,10 +89,18 @@ export default {
       }
     },
     logout: function() {
-      this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
+      this.isVisible = true;
+      setTimeout(() => {
+        this.isVisible = false;
+        this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
+      }, 500);
     },
     goToSertific: function() {
-      this.$router.push("/choise-certification");
+      this.isVisible = true;
+      setTimeout(() => {
+        this.isVisible = false;
+        this.$router.push("/choise-certification");
+      }, 500);
     }
   }
 };
@@ -95,11 +120,12 @@ export default {
     border-top: 3px solid black;
     border-right: 1px solid #fdc730;
     border-bottom: 10px solid #20a8f9;
-    box-shadow: rgba(0, 0, 0, 0.18) 0px 1px 4px 0px, rgba(0, 0, 0, 0.2) 0px 2px 15px 0px;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 1px 4px 0px,
+      rgba(0, 0, 0, 0.2) 0px 2px 15px 0px;
     width: 26vw;
     // height: 30vh;
     padding: 35px;
-    margin: 3%;
+    margin: 10px 50px;
 
     h1 {
       line-height: 41px;

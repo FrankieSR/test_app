@@ -1,59 +1,68 @@
 <template>
   <div id="app">
+    <Navigation />
     <div class="application-wrapper">
       <div class="timeline">
         <div class="timeline-inner" v-bind:style="{width: testInfo() + '%'}"></div>
       </div>
       <div v-if="questionIndex < allQuestionsLength()">
-        <span class="to-end">{{questionIndex +1 }} / {{allQuestionsLength()}}</span>
+        <span class="to-end">{{questionIndex +1 }} / {{allQuestionsLength()}} <i class="fas fa-ruler-horizontal"></i></span>
       </div>
       <div class="question-list" v-if="questionIndex < allQuestionsLength()">
         <div
           v-for="(question, index) in RandomSortedQuestionList"
           v-bind:key="index"
           class="question-body"
-          v-if="index == questionIndex">
+          v-if="index == questionIndex"
+        >
           <h3 class="question" ref="question">{{question.question}}</h3>
           <ul>
             <li
               v-for="(choise, choiseIndex) in question.choise"
               v-bind:key="choiseIndex"
               @click="checkAnswer($event)"
-              :data="choise.index">
-              {{choiseIndex +1}} : {{choise.option}}</li>
+              :data="choise.index"
+            >{{choiseIndex +1}} : {{choise.option}}</li>
           </ul>
           <div class="need-answers">You need to select {{needAnswers()}} answer.</div>
           <div class="control-buttons">
-            <button class="prev" @click="previousQuestion">Previous</button>
-            <button @click="nextQuestion">Next</button>
+            <button class="prev" @click="previousQuestion"> <i class="fas fa-caret-left"></i> Prev</button>
+            <button @click="nextQuestion">Next <i class="fas fa-caret-right"></i></button>
           </div>
         </div>
       </div>
-	        <div v-else class="result-information">
-        <div class="result-wrapper" v-if="testResult() > 60">
-          <div class="result">your result {{testResult().toFixed()}} %</div>
-          <div class="success">
-            <div class="five-stars stars" v-if="testResult() > 90">
-              <!-- <img v-for="(item, index) in 5" :key="index" src="~@/assets/favorite.svg"> -->
-            </div>
-            <div class="four-stars stars" v-else-if="testResult() > 75">
-              <!-- <img v-for="(item, index) in 4" :key="index" src="~@/assets/favorite.svg"> -->
-            </div>
-            <div class="three-stars stars" v-else-if="testResult() > 60">
-              <!-- <img v-for="(item, index) in 3" :key="index" src="~@/assets/favorite.svg"> -->
+      <div v-else class="result-information">
+        <div class="result-information-wrapper">
+          <div class="result-wrapper" v-if="testResult() > 60">
+            <div class="result">
+              Hey! You are cool! <i class="far fa-grin-stars"></i>
+              <br> Your result
+              <span>{{testResult().toFixed(0)}}</span>%
+              <img src="../assets/giphy.gif" alt="image">
             </div>
           </div>
-        </div>
-        <div class="result-wrapper" v-else>
-          <div class="result">your result {{testResult().toFixed(0)}} %</div>
-          <div class="fail">
-            <div class="five-stars stars" v-if="testResult() < 60">
-              <h1>Failure. Please try more!</h1>
+          <div class="result-wrapper" v-else>
+            <div class="result fail">
+              Oh <i class="far fa-frown"></i> You must study more!
+              <br>Your result
+              <span>{{testResult().toFixed()}}</span>%
             </div>
+            <!-- <img src="../assets/expert-developers.gif" alt="image"> -->
+          </div>
+          <div class="account-information">
+            <div class="logout">
+              <button @click="logout">Logout <i class="fas fa-sign-out-alt"></i></button>
+              <button @click="restart">New test <i class="fas fa-retweet"></i></button>
+            </div>
+            <!-- <div class="account">
+              <img src="../assets/child-1837375_960_720.png" alt="image">
+              _User
+            </div>-->
+            <div class="restart"></div>
           </div>
         </div>
         <div class="buttons">
-          <button class="open-results" @click="watchResults()">Watch results</button>
+          <button class="open-results" @click="watchResults()">Watch results <i class="fas fa-eye"></i></button>
         </div>
         <div class="see-results" v-show="seenResults">
           <div v-for="(question, index) in RandomSortedQuestionList" v-bind:key="index">
@@ -75,6 +84,8 @@
 <script>
 import { setInterval, clearInterval } from "timers";
 import store from "../store";
+import { mapGetters, mapState } from "vuex";
+import Navigation from "../components/Navigation.vue";
 
 export default {
   name: "Test",
@@ -84,26 +95,49 @@ export default {
       RandomSortedQuestionList: [],
       questionIndex: 0,
       timeRange: 0,
-      randomQCheckbox: true,
-      randomOptCheckbox: true,
       seenResults: false,
-      name: ''
+      name: ""
     };
   },
+  components: {
+    Navigation
+  },
+  computed: {
+    ...mapGetters(["getQuestionSort", "getOptionsSort"]),
+    ...mapState({
+      randomQCheckbox: state => state.randomQuestions,
+      randomOptCheckbox: state => state.randomOptions
+    })
+  },
   methods: {
+    logout: function() {
+      this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
+    },
+    restart: function() {
+      this.$router.push("/choise-certification");
+    },
     //methods for start page
     testInfo() {
-    	this.$nextTick(function () {
-			if (this.$refs.question[0]) {
-				this.$refs.question[0].innerHTML = this.$refs.question[0].innerHTML.replace(/&lt;/g,"<").replace(/&gt;/g,">");
-			}
-    	 });
+      console.log(this.$nextTick + "<-----");
+      this.$nextTick(function() {
+        if (
+          this.$refs.question ||
+          this.$refs.question[0].innerHTML != undefined
+        ) {
+          this.$refs.question[0].innerHTML = this.$refs.question[0].innerHTML
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">");
+        }
+      });
       if (this.questionIndex < this.allQuestionsLength()) {
         return ((this.questionIndex + 1) / this.allQuestionsLength()) * 100; //!!!!!!!!!
       }
     },
     consoleMessage() {
-      console.log('%c Hello, if you find a mistake in the text, please inform me in Skype.', 'background: #f6c2d8; color: #7babed; font-size: 35px;');
+      console.log(
+        "%c Hello, if you find a mistake in the text, please inform me in Skype.",
+        "background: #f6c2d8; color: #7babed; font-size: 35px;"
+      );
     },
     // methods for tests
     checkAnswer(event) {
@@ -123,11 +157,13 @@ export default {
     },
     needAnswers() {
       let needOption = [];
-      this.RandomSortedQuestionList[this.questionIndex].choise.forEach((option)=>{
-        if (option.isTrue === true) {
-          needOption.push(1);
+      this.RandomSortedQuestionList[this.questionIndex].choise.forEach(
+        option => {
+          if (option.isTrue === true) {
+            needOption.push(1);
+          }
         }
-      });
+      );
       return needOption.length;
     },
     sortRandomQuestions: function() {
@@ -135,6 +171,7 @@ export default {
       let _array = [];
       for (const _key in this.allQuestionsList) {
         if (this.allQuestionsList.hasOwnProperty(_key)) {
+          console.log(this.randomOptCheckbox + "op");
           if (this.randomOptCheckbox === true) {
             this.allQuestionsList[_key].choise.sort(
               (a, b) => Math.random() - 0.5
@@ -143,6 +180,7 @@ export default {
           _array.push(this.allQuestionsList[_key]);
         }
       }
+      console.log(this.randomQCheckbox + "qu");
       if (this.randomQCheckbox === true) {
         this.RandomSortedQuestionList = _array.sort(
           (a, b) => Math.random() - 0.5
@@ -154,17 +192,18 @@ export default {
     nextQuestion() {
       if (this.questionIndex <= this.allQuestionsLength()) {
         this.questionIndex++;
-	  }
-	  else {
-		  this.$router.push("/");
-	  }
+      } else {
+        this.$router.push("/");
+      }
     },
     previousQuestion() {
       if (this.questionIndex > 0) {
         this.questionIndex--;
-        this.RandomSortedQuestionList[this.questionIndex].choise.forEach((item)=>{
-          item.myAnswer = false;
-        });
+        this.RandomSortedQuestionList[this.questionIndex].choise.forEach(
+          item => {
+            item.myAnswer = false;
+          }
+        );
       }
     },
 
@@ -203,24 +242,28 @@ export default {
     },
     watchResults() {
       this.seenResults = !this.seenResults;
+    },
+    ifPageReload() {
+      if (localStorage.getItem("reloadPage")) {
+        this.$router.push("/");
+        localStorage.removeItem("reloadPage");
+      }
     }
   },
   mounted() {
-	this.consoleMessage();
-	this.sortRandomQuestions();
-	console.log(this.RandomSortedQuestionList);
-	// window.onbeforeunload = function(e) {
-  // 	localStorage.setItem("reloadPage", true);
-    // if (this.$router.go(this.$router.currentRoute)) {
-    //   this.$router.push("/");
-    // }
-	// };
+    this.ifPageReload();
+    this.consoleMessage();
+    // console.log(this.RandomSortedQuestionList);
+    window.onbeforeunload = function(e) {
+      localStorage.setItem("reloadPage", true);
+    };
+    this.sortRandomQuestions();
+    console.log(this.$router);
   }
 };
 </script>
 
 <style lang="less">
-
 body {
   -webkit-font-smoothing: antialiased;
   h1 {
@@ -228,6 +271,7 @@ body {
     margin: 0;
   }
 }
+
 .exit {
   width: 35px;
   height: 35px;
@@ -260,47 +304,33 @@ body {
   }
 }
 .active {
-  background: #f6c2d8;
-  box-shadow: 0 4px 10px #999;
+  background: #00bd85;
+  box-shadow: 0 3px 5px #999;
 }
 .red {
-  background: #f6c2d8;
+  background: #F8606B;
   border: 1px solid red;
 }
 .green {
-  background: greenyellow;
+  background: #66cfb3;
   border: 1px solid green;
 }
 .yellow {
-  background: #fcebbf;
+  background: #fec82f;
   border: 1px solid orangered;
 }
 .timeline {
   position: absolute;
-  top: 0;
+  top: -15px;
   left: 0;
   width: 100%;
-  height: 15px;
+  height: 10px;
   &-inner {
-    height: 15px;
-    background: #f6c2d8;
+    height: 10px;
+    background: #3BB3FB;
   }
 }
-.your-password {
-  display: flex;
-  justify-content: center;
-  min-height: 60px;
-  border: 3px solid #f6c2d8;
-  border-radius: 10px;
-  width: 40%;
-  margin: 0 auto;
-  padding: 15px 0 0;
-  cursor: not-allowed;
-  &-item {
-    width: 40px;
-    height: 40px;
-  }
-}
+
 label {
   cursor: pointer;
 }
@@ -308,87 +338,37 @@ label {
   font-weight: bold;
   padding: 15px 0 20px;
 }
-.set-password {
-  display: flex;
-  width: 40%;
-  justify-content: center;
-  margin: 10px auto;
-  flex-wrap: wrap;
-  > div {
-    flex-basis: 33%;
-    button {
-      width: 97%;
-      height: 70px;
-      background: #fcebbf;
-      border: none;
-      border-radius: 10px;
-      margin: 3px;
-      cursor: pointer;
-    }
-  }
-}
-.start-test {
-  width: 120px;
-  height: 70px;
-  background: #f6c2d8;
-  border: none;
-  border-radius: 10px;
-  margin: 3px;
-  color: #fff;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 100%;
-  cursor: pointer;
-  transition: 0.2s;
-  &:hover {
-    box-shadow: 0 5px 10px #ced6e3;
-  }
-}
-.reset-password {
-  width: 100px;
-  height: 50px;
-  background: #ced6e3;
-  border: none;
-  border-radius: 10px;
-  margin: 3px;
-  color: #fff;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 90%;
-  cursor: pointer;
-  transition: 0.2s;
-  &:hover {
-    box-shadow: 0 5px 10px #ced6e3;
-  }
-}
+
 .application-wrapper {
-  margin: 20px auto;
+  position: relative;
+  margin: 15px auto;
   width: 80%;
+  text-align: left;
 }
 ul {
   list-style: none;
 }
 .to-end {
-  font-size: 120%;
+  font-size: 115%;
   font-weight: 700;
   color: grey;
-  padding: 20px 0;
-  margin-top: 10px;
+  padding: 15px 0;
+  margin-top: 8px;
   display: block;
   &::first-letter {
-    font-size: 140%;
+    font-size: 130%;
   }
 }
 button {
-  box-shadow: 0 1px 1px #aaa;       
+  box-shadow: 0 1px 1px #aaa;
 }
 .question {
-  border-bottom: 3px solid #fcebbf;
+  border-bottom: 3px solid #fec82f;
   margin: 5px 0 10px;
-  padding: 20px;
-  line-height: 22px;
+  padding: 10px 20px;
+  line-height: 19px;
   white-space: pre-wrap;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .question-body {
@@ -398,67 +378,150 @@ button {
 
   ul li {
     cursor: pointer;
-    margin: 12px 0;
-    padding: 0 15px 15px;
-    border-radius: 10px;
+    margin: 10px 0;
+    padding: 9px 15px 9px;
+    border-radius: 3px;
     font-weight: 500;
     transition: 0.2s;
     white-space: pre-wrap;
     &::first-letter {
       font-size: 130%;
       font-weight: 700;
-      color: #7babed;
-      line-height: 20px;
+      color: #3BB3FB;
+      line-height: 15px;
     }
     &:hover {
-      box-shadow: 0 3px 10px #7babed;
-      background: #7babed;
+      background: #3BB3FB;
       &::first-letter {
         color: #fff;
       }
     }
   }
+
+  .control-buttons {
+    max-width: 305px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
   button {
-    width: 200px;
+    width: 170px;
     height: 50px;
-    background: #7babed;
     border: none;
-    border-radius: 10px;
-    margin: 3px;
-    color: #fff;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 90%;
     cursor: pointer;
-    transition: 0.2s;
+    background: #d9d9d9;
+    border-right: 7px solid #fdc730;
+    border-bottom: 1px solid #fdc730;
+    font-weight: 700;
+    font-size: 20px;
+    font-family: "Share Tech Mono", monospace;
+    transition: 0.3s;
+    border-radius: 1px;
+
     &:hover {
-      box-shadow: 0 5px 10px #ced6e3;
+      border-bottom: 5px solid #20a8f9;
+      border-right: 5px solid #fdc730;
     }
   }
   .prev {
-    height: 50px;
-    width: 90px;
+    height: 45px;
+    width: 120px;
     background: #ced6e3;
   }
 }
+
+.result-information-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    width: 180px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+    background: #d9d9d9;
+    border-right: 7px solid #fdc730;
+    border-bottom: 1px solid #fdc730;
+    font-weight: 700;
+    font-size: 20px;
+    font-family: "Share Tech Mono", monospace;
+    transition: 0.3s;
+    border-radius: 1px;
+    margin: 5px auto;
+    display: block;
+
+    &:hover {
+      border-bottom: 5px solid #20a8f9;
+      border-right: 5px solid #fdc730;
+    }
+  }
+}
+
+.account-information {
+  max-width: 200px;
+  background: #00a263;
+  height: 130px;
+  padding: 0 5px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+
+  img {
+    width: 100%;
+  }
+}
+
 .result-information {
-  margin: 120px auto 25px;
-  width: 80%;
-  min-height: 50vh;
+  margin: 0 auto 25px;
+  width: 100%;
+  min-height: 95vh;
+  background: url("../assets/panel-company@2x.png") no-repeat;
+  background-position: 100% 0%;
+  background-size: content;
 }
 .result-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   min-height: 200px;
+  margin: 0px 0 30px;
   text-align: center;
+  border: 3px solid black;
+  max-width: 500px;
+  box-shadow: rgba(0, 0, 0, 0.18) 0px 1px 4px 0px,
+    rgba(0, 0, 0, 0.2) 0px 2px 15px 0px;
+  border-left: 3px solid black;
+  border-top: 10px solid #00a263;
+  border-right: 1px solid #fdc730;
+  border-bottom: 10px solid #20a8f9;
+  color: #000;
+  line-height: 60px;
+
+  img {
+    width: 85%;
+  }
+
   .success {
     width: 100%;
     height: 60px;
     flex-basis: 60%;
   }
   .result {
-    font-size: 300%;
-    font-weight: 900;
+    font-size: 60px;
+
+    span {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 90px;
+      font-weight: 700;
+      color: #00a263;
+    }
+  }
+
+  .fail {
+    span {
+      color: red;
+      text-decoration: underline;
+    }
   }
 }
 .stars {
@@ -466,20 +529,24 @@ button {
   justify-content: space-around;
 }
 .open-results {
-  width: 200px;
-  height: 50px;
-  background: #7babed;
+  width: 70%;
+  margin: 0 auto;
+  height: 40px;
   border: none;
-  border-radius: 10px;
-  margin: 3px;
-  color: #fff;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 90%;
   cursor: pointer;
-  transition: 0.2s;
+  background: #d9d9d9;
+  border-right: 7px solid #fdc730;
+  border-bottom: 3px solid red;
+  font-weight: 700;
+  font-size: 20px;
+  font-family: "Share Tech Mono", monospace;
+  transition: 0.3s;
+  font-size: 30px;
+
   &:hover {
-    box-shadow: 0 5px 10px #ced6e3;
+    border-bottom: 15px solid #20a8f9;
+    border-right: 15px solid #fdc730;
+    height: 50px;
   }
 }
 .see-results {
@@ -487,68 +554,57 @@ button {
   font-weight: 600;
   font-size: 20px;
   & > div {
-    border: 2px solid #7babed;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 1px 4px 0px,
+      rgba(0, 0, 0, 0.2) 0px 2px 15px 0px;
+    border-left: 2px solid #20a8f9;
+    border-top: 3px solid red;
     margin: 20px 0;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 3px;
+    background: #fff;
     li {
       margin: 10px;
       font-size: 16px;
       font-weight: 400;
       padding: 15px 10px;
-      border-radius: 10px;
+      border-radius: 3px;
       white-space: pre-wrap;
     }
   }
 }
-.restart {
-  width: 100px;
-  height: 50px;
-  background: #f6c2d8;
-  border: none;
-  border-radius: 10px;
-  margin: 3px;
-  color: #fff;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 90%;
-  cursor: pointer;
-  transition: 0.2s;
-  &:hover {
-    box-shadow: 0 5px 10px #ced6e3;
-  }
-}
+
 .buttons {
   display: flex;
   align-items: center;
 }
+
 .message-bottom {
-    font-size: 12px;
-    font-weight: 500;
-    position: absolute;
-    top: 5px;
-    margin: 0;
-    right: 10px;
-    z-index: 2;
+  font-size: 12px;
+  font-weight: 500;
+  position: absolute;
+  top: 5px;
+  margin: 0;
+  right: 10px;
+  z-index: 2;
 }
 .need-answers {
-  background: #fcebbf;
   display: inline-block;
-  margin: 5px;
+  border: 2px solid red;
+  margin: 5px 0;
+  font-weight: 500;
   line-height: 20px;
   padding: 5px 10px;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px #aaa;
+  border-radius: 2px;
 }
 
 code {
-  background: #383736;
-  color: #ffa;
+  background: #5f5f5e;
+  color: #fec82f;
   padding: 5px 8px;
   margin: 5px;
   font-size: 16px;
-  font-family: 'Inconsolata', monospace;
-  border-radius: 3px;
+  font-family: "Share Tech Mono", monospace;
+  border-radius: 2px;
   font-weight: 500;
 }
 
