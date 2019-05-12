@@ -47,6 +47,13 @@
         <!-- можно добавить логаут -->
       </div>
     </div>
+    <div class="pos-absolute-information">
+      <div class="info">
+        <p>Guys, the whole site was made in 3 days. Therefore, there are bugs.</p>  
+        <p>If you find any bugs or errors in the questions, please write to me.</p>
+        <p>To contact me, click on your username at the top of the page.</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -112,6 +119,13 @@ export default {
   background: url("../assets/banner-2.png") no-repeat;
   background-position: 100% 100%;
   background-size: content;
+  position: relative;
+
+.pos-absolute-information {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+}
 
   .home {
     text-align: left;

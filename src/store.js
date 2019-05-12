@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import frontend from "./data/frontend";
+import backend from "./data/backend";
 
 Vue.use(Vuex);
 
@@ -13,7 +14,7 @@ export default new Vuex.Store({
       username: localStorage.getItem("username"),
       bestResult: ""
     },
-    questionList: "",
+    questionList: frontend,
     choiseSertificationTest: "",
     randomQuestions: true,
     randomOptions: true
@@ -86,16 +87,16 @@ export default new Vuex.Store({
     },
     CHOISE_TEST: ({ commit }, testName) => {
       commit("CHOISE_TEST", testName);
-      localStorage.setItem("choiseSertificationTest", testName);
-      if (localStorage.getItem("choiseSertificationTest") == "frontend") {
+
+      if (testName == "frontend") {
         commit("SET_TEST", frontend);
       }
-      // if (testName == "backend") {
-      //   commit("SET_TEST", frontend);
-      // }
-      // if (testName == "asociate") {
-      //   commit("SET_TEST", frontend);
-      // }
+      if (testName == "backend") {
+        commit("SET_TEST", backend);
+      }
+      if (testName == "solution") {
+        // commit("SET_TEST", solution);
+      }
     },
     SORT_QUESTIONS: ({ commit }) => {
       commit("SORT_QUESTIONS");

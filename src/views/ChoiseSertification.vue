@@ -23,12 +23,12 @@
       <div class="backend item">
         <span>Backend Developer</span>
         <img src="../assets/expert-developers.gif" alt="image">
-        <button @click="startTest('frontend')">Start Test <i class="fas fa-play"></i></button>
+        <button @click="startTest('backend')">Start Test <i class="fas fa-play"></i></button>
       </div>
       <div class="asociate item">
         <span>Project managers</span>
         <img src="../assets/giphyp.gif" alt="image">
-        <button @click="startTest('frontend')">Start Test <i class="fas fa-play"></i></button>
+        <button @click="startTest('solution')">Start Test <i class="fas fa-play"></i></button>
       </div>
     </div>
   </div>

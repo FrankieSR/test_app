@@ -58,7 +58,6 @@
               <img src="../assets/child-1837375_960_720.png" alt="image">
               _User
             </div>-->
-            <div class="restart"></div>
           </div>
         </div>
         <div class="buttons">
@@ -86,6 +85,7 @@ import { setInterval, clearInterval } from "timers";
 import store from "../store";
 import { mapGetters, mapState } from "vuex";
 import Navigation from "../components/Navigation.vue";
+
 
 export default {
   name: "Test",
@@ -118,17 +118,16 @@ export default {
     },
     //methods for start page
     testInfo() {
-      console.log(this.$nextTick + "<-----");
-      this.$nextTick(function() {
-        if (
-          this.$refs.question ||
-          this.$refs.question[0].innerHTML != undefined
-        ) {
-          this.$refs.question[0].innerHTML = this.$refs.question[0].innerHTML
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">");
-        }
-      });
+      // this.$nextTick(function() {
+      //   if (
+      //     this.$refs.question ||
+      //     this.$refs.question[0].innerHTML != undefined
+      //   ) {
+      //     this.$refs.question[0].innerHTML = this.$refs.question[0].innerHTML
+      //       .replace(/&lt;/g, "<")
+      //       .replace(/&gt;/g, ">");
+      //   }
+      // });
       if (this.questionIndex < this.allQuestionsLength()) {
         return ((this.questionIndex + 1) / this.allQuestionsLength()) * 100; //!!!!!!!!!
       }
@@ -167,26 +166,36 @@ export default {
       return needOption.length;
     },
     sortRandomQuestions: function() {
+      console.log(this.allQuestionsList);
+      let _list = this.allQuestionsList;
+
+      // _list.forEach((item)=>{
+      //   item.choise.forEach((option)=>{
+      //     option.myAnswer = false;
+      //   });
+      // });
       // можно отключить рандомную сортировку вопросов
       let _array = [];
-      for (const _key in this.allQuestionsList) {
-        if (this.allQuestionsList.hasOwnProperty(_key)) {
-          console.log(this.randomOptCheckbox + "op");
+      for (const _key in _list) {
+        if (_list.hasOwnProperty(_key)) {
+          _list[_key].choise.forEach((option)=>{
+            option.myAnswer = false;
+          });
           if (this.randomOptCheckbox === true) {
-            this.allQuestionsList[_key].choise.sort(
+            _list[_key].choise.sort(
               (a, b) => Math.random() - 0.5
             ); // можно поставить опцию сортировки вариантов ответов
           }
-          _array.push(this.allQuestionsList[_key]);
+          _array.push(_list[_key]);
         }
       }
-      console.log(this.randomQCheckbox + "qu");
+
       if (this.randomQCheckbox === true) {
         this.RandomSortedQuestionList = _array.sort(
           (a, b) => Math.random() - 0.5
         );
       } else {
-        this.RandomSortedQuestionList = this.allQuestionsList;
+        this.RandomSortedQuestionList = _list;
       }
     },
     nextQuestion() {
@@ -207,6 +216,14 @@ export default {
       }
     },
 
+    resetArray() {
+      this.RandomSortedQuestionList.forEach((item)=>{
+        item.choise.forEach((option)=>{
+          option.myAnswer = false;
+        });
+      });
+    },
+
     allQuestionsLength() {
       return Object.keys(this.allQuestionsList).length;
     },
@@ -221,7 +238,11 @@ export default {
           }
           if (choiseInfo.myAnswer == true) {
             _myAnswer.push(choiseInfo.myAnswer);
-            if (choiseInfo.myAnswer == true && choiseInfo.isTrue == true) {
+            if (
+              choiseInfo.myAnswer == true &&
+              choiseInfo.isTrue == true &&
+              _trueAnswers.length == _myAnswer.length
+            ) {
               _myTrueAnswers.push(1);
             }
           }
@@ -251,14 +272,16 @@ export default {
     }
   },
   mounted() {
+    this.resetArray();
+    console.log(this.RandomSortedQuestionList);
+    this.sortRandomQuestions();
     this.ifPageReload();
     this.consoleMessage();
-    // console.log(this.RandomSortedQuestionList);
+    console.log(this.RandomSortedQuestionList);
     window.onbeforeunload = function(e) {
       localStorage.setItem("reloadPage", true);
     };
-    this.sortRandomQuestions();
-    console.log(this.$router);
+    
   }
 };
 </script>
@@ -475,7 +498,7 @@ button {
   margin: 0 auto 25px;
   width: 100%;
   min-height: 95vh;
-  background: url("../assets/panel-company@2x.png") no-repeat;
+  background: url("../assets/feature-list-1.png") no-repeat;
   background-position: 100% 0%;
   background-size: content;
 }
