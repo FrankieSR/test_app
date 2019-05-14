@@ -11,7 +11,7 @@ export default new Vuex.Store({
     token: localStorage.getItem("user-token"),
     status: "",
     profile: {
-      username: localStorage.getItem("username"),
+      username: localStorage.getItem("name"),
       bestResult: ""
     },
     questionList: frontend,
@@ -50,19 +50,18 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    AUTH_REQUEST: ({ commit, dispatch }, { username, password }) => {
+    AUTH_REQUEST: ({ commit, dispatch }, { password }) => {
       return new Promise((resolve, reject) => {
         commit("AUTH_REQUEST");
-        console.log({ username, password });
+
         axios
-          .post("http://frankiesr.getsandbox.com/login", {
-            username: username,
+          .post("https://frankiesr.getsandbox.com/login", {
             pass: password
           })
           .then(resp => {
             if (resp.data.isAuth !== "Denied" && resp.data.token !== "") {
               localStorage.setItem("user-token", resp.data.token);
-              commit("SET_NAME", resp.data.name);
+              // commit("SET_NAME", resp.data.name);
               commit("AUTH_SUCCESS", resp);
               resolve(resp);
             } else {
@@ -82,6 +81,10 @@ export default new Vuex.Store({
         commit("AUTH_LOGOUT");
         localStorage.removeItem("user-token");
         localStorage.removeItem("username");
+        localStorage.removeItem("name");
+        localStorage.removeItem("photoURL");
+        localStorage.removeItem("id");
+        localStorage.removeItem("email");
         resolve();
       });
     },
@@ -97,6 +100,13 @@ export default new Vuex.Store({
       if (testName == "solution") {
         // commit("SET_TEST", solution);
       }
+    },
+    SET_USER_INFO: ({ commit }, user)=>{
+      localStorage.setItem("name", user.displayName);
+      localStorage.setItem("photoURL",  user.photoURL);
+      localStorage.setItem("id", user.uid);
+      localStorage.setItem("email",  user.email);
+      // commit("SET_USER_INFO");
     },
     SORT_QUESTIONS: ({ commit }) => {
       commit("SORT_QUESTIONS");

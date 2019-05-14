@@ -1,12 +1,15 @@
 <template>
   <div id="app">
-    <Navigation />
+    <Navigation/>
     <div class="application-wrapper">
       <div class="timeline">
         <div class="timeline-inner" v-bind:style="{width: testInfo() + '%'}"></div>
       </div>
       <div v-if="questionIndex < allQuestionsLength()">
-        <span class="to-end">{{questionIndex +1 }} / {{allQuestionsLength()}} <i class="fas fa-ruler-horizontal"></i></span>
+        <span class="to-end">
+          {{questionIndex +1 }} / {{allQuestionsLength()}}
+          <i class="fas fa-ruler-horizontal"></i>
+        </span>
       </div>
       <div class="question-list" v-if="questionIndex < allQuestionsLength()">
         <div
@@ -26,8 +29,13 @@
           </ul>
           <div class="need-answers">You need to select {{needAnswers()}} answer.</div>
           <div class="control-buttons">
-            <button class="prev" @click="previousQuestion"> <i class="fas fa-caret-left"></i> Prev</button>
-            <button @click="nextQuestion">Next <i class="fas fa-caret-right"></i></button>
+            <button class="prev" @click="previousQuestion">
+              <i class="fas fa-caret-left"></i> Prev
+            </button>
+            <button @click="nextQuestion">
+              Next
+              <i class="fas fa-caret-right"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -35,15 +43,17 @@
         <div class="result-information-wrapper">
           <div class="result-wrapper" v-if="testResult() > 60">
             <div class="result">
-              Hey! You are cool! <i class="far fa-grin-stars"></i>
-              <br> Your result
+              Hey! You are cool!
+              <i class="far fa-grin-stars"></i>
+              <br>Your result
               <span>{{testResult().toFixed(0)}}</span>%
               <img src="../assets/giphy.gif" alt="image">
             </div>
           </div>
           <div class="result-wrapper" v-else>
             <div class="result fail">
-              Oh <i class="far fa-frown"></i> You must study more!
+              Oh
+              <i class="far fa-frown"></i> You must study more!
               <br>Your result
               <span>{{testResult().toFixed()}}</span>%
             </div>
@@ -51,8 +61,10 @@
           </div>
           <div class="account-information">
             <div class="logout">
-              <button @click="logout">Logout <i class="fas fa-sign-out-alt"></i></button>
-              <button @click="restart">New test <i class="fas fa-retweet"></i></button>
+              <button @click="restart">
+                New test
+                <i class="fas fa-retweet"></i>
+              </button>
             </div>
             <!-- <div class="account">
               <img src="../assets/child-1837375_960_720.png" alt="image">
@@ -61,7 +73,10 @@
           </div>
         </div>
         <div class="buttons">
-          <button class="open-results" @click="watchResults()">Watch results <i class="fas fa-eye"></i></button>
+          <button class="open-results" @click="watchResults()">
+            Watch results
+            <i class="fas fa-eye"></i>
+          </button>
         </div>
         <div class="see-results" v-show="seenResults">
           <div v-for="(question, index) in RandomSortedQuestionList" v-bind:key="index">
@@ -85,7 +100,11 @@ import { setInterval, clearInterval } from "timers";
 import store from "../store";
 import { mapGetters, mapState } from "vuex";
 import Navigation from "../components/Navigation.vue";
+import * as firebase from "firebase/app";
 
+// Add the Firebase products that you want to use
+
+import "firebase/database";
 
 export default {
   name: "Test",
@@ -166,25 +185,17 @@ export default {
       return needOption.length;
     },
     sortRandomQuestions: function() {
-      console.log(this.allQuestionsList);
       let _list = this.allQuestionsList;
 
-      // _list.forEach((item)=>{
-      //   item.choise.forEach((option)=>{
-      //     option.myAnswer = false;
-      //   });
-      // });
       // можно отключить рандомную сортировку вопросов
       let _array = [];
       for (const _key in _list) {
         if (_list.hasOwnProperty(_key)) {
-          _list[_key].choise.forEach((option)=>{
+          _list[_key].choise.forEach(option => {
             option.myAnswer = false;
           });
           if (this.randomOptCheckbox === true) {
-            _list[_key].choise.sort(
-              (a, b) => Math.random() - 0.5
-            ); // можно поставить опцию сортировки вариантов ответов
+            _list[_key].choise.sort((a, b) => Math.random() - 0.5); // можно поставить опцию сортировки вариантов ответов
           }
           _array.push(_list[_key]);
         }
@@ -217,8 +228,8 @@ export default {
     },
 
     resetArray() {
-      this.RandomSortedQuestionList.forEach((item)=>{
-        item.choise.forEach((option)=>{
+      this.RandomSortedQuestionList.forEach(item => {
+        item.choise.forEach(option => {
           option.myAnswer = false;
         });
       });
@@ -248,8 +259,22 @@ export default {
           }
         });
       });
-      return (_myTrueAnswers.length / _trueAnswers.length) * 100;
+
+      let result = (_myTrueAnswers.length / _trueAnswers.length) * 100;
+      let database = firebase.database();
+
+      firebase
+        .database()
+        .ref("users/" + localStorage.getItem('id'))
+        .set({
+          username: localStorage.getItem('name'),
+          email: localStorage.getItem('email'),
+          profile_picture: localStorage.getItem('photoURL'),
+          result_test: result
+        });
+      return result;
     },
+
     paintResultList(isTrue, isMyAnsw) {
       if (isTrue == true && isMyAnsw == true) {
         return "green";
@@ -273,15 +298,13 @@ export default {
   },
   mounted() {
     this.resetArray();
-    console.log(this.RandomSortedQuestionList);
+
     this.sortRandomQuestions();
-    this.ifPageReload();
     this.consoleMessage();
-    console.log(this.RandomSortedQuestionList);
+
     window.onbeforeunload = function(e) {
       localStorage.setItem("reloadPage", true);
     };
-    
   }
 };
 </script>
@@ -331,7 +354,7 @@ body {
   box-shadow: 0 3px 5px #999;
 }
 .red {
-  background: #F8606B;
+  background: #f8606b;
   border: 1px solid red;
 }
 .green {
@@ -350,7 +373,7 @@ body {
   height: 10px;
   &-inner {
     height: 10px;
-    background: #3BB3FB;
+    background: #3bb3fb;
   }
 }
 
@@ -410,11 +433,11 @@ button {
     &::first-letter {
       font-size: 130%;
       font-weight: 700;
-      color: #3BB3FB;
+      color: #3bb3fb;
       line-height: 15px;
     }
     &:hover {
-      background: #3BB3FB;
+      background: #3bb3fb;
       &::first-letter {
         color: #fff;
       }

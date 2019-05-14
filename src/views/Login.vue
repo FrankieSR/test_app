@@ -2,31 +2,34 @@
   <div class="login-page">
     <div class="login-wrapper">
       <p>
-        Please enter your name and
+        Please enter
         <br>
         <strong>password that was provided to you</strong>
       </p>
       <form class="login" @submit.prevent="login">
         <div class="input-wrapper">
-          <label for="username">Your name</label>
-          <div class="input-group">
+          <!-- <label for="username">Your name</label> -->
+          <!-- <div class="input-group">
             <input required v-model="username" id="username" type="text" placeholder="Your Name">
             <i class="fas fa-user-circle"></i>
-          </div>
+          </div>-->
           <label for="password">Password</label>
           <div class="input-group">
-            <input required v-model="password" id="password" type="password" placeholder="Password">
+            <input required v-model="password" id="password" type="text" placeholder="Password">
             <i class="fas fa-lock"></i>
           </div>
-          <div class="input-group">
+          <!-- <div class="input-group">
             <label for="save_customer">Save name?</label>
             <input type="checkbox" @click="saveCustomer" v-model="ifSave" id="save_customer">
-          </div>
+          </div>-->
         </div>
         <div class="buton-wrapper">
           <Loader v-if="loading"/>
           <div v-else>
-            <button type="submit">Log In <i class="fas fa-door-closed"></i></button>
+            <button type="submit">
+              <span>Enter</span>
+              <i class="fas fa-door-closed"></i>
+            </button>
           </div>
         </div>
       </form>
@@ -41,6 +44,12 @@
 import store from "../store";
 import { mapGetters } from "vuex";
 import Loader from "../components/Loader.vue";
+// Firebase App (the core Firebase SDK) is always required and must be listed first
+import * as firebase from "firebase/app";
+
+// Add the Firebase products that you want to use
+import "firebase/auth";
+import "firebase/database";
 
 export default {
   name: "login",
@@ -56,18 +65,76 @@ export default {
   },
   methods: {
     login: function() {
-      const { username, password } = this;
+      const { password } = this;
 
-      this.$store.dispatch("AUTH_REQUEST", { username, password }).then(() => {
-        if (this.ifSave) {
-          localStorage.setItem("username", this.username);
-        }
-        this.$router.push("/choise-certification");
+      this.$store.dispatch("AUTH_REQUEST", { password }).then(() => {
+        // if (this.ifSave) {
+        //   localStorage.setItem("username", this.username);
+        // }
+
+        this.googleAuth();
+
       });
     },
     saveCustomer: function() {
       console.log(this.ifSave);
       this.ifSave = !this.ifSave;
+    },
+    googleAuth: function() {
+      let self = this;
+      var database = firebase.database();
+      let provider = new firebase.auth.GoogleAuthProvider();
+
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(function(result) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+          // console.log(user);
+
+          self.$store.dispatch("SET_USER_INFO", user);
+                  let database = firebase.database();
+
+        // var userId = firebase.auth().currentUser.;
+        return firebase
+          .database()
+          .ref("/users/" + user.uid)
+          .once("value")
+          .then(function(snapshot) {
+            console.log(snapshot.val());
+            self.$router.push("/choise-certification");
+          });
+          
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          self.$store.dispatch("AUTH_LOGOUT");
+          // ...
+        });
+    },
+    writeUserData: function(userId, name, email, imageUrl) {
+      firebase
+        .database()
+        .ref("users/" + userId)
+        .set({
+          username: name,
+          email: email,
+          profile_picture: imageUrl
+        });
+    },
+    setInfoUser: function(token, name, photo) {
+      localStorage.setItem("user-token", token);
+      localStorage.setItem("name", username);
+      localStorage.setItem("photoURL", user.photo);
     }
   },
   computed: {
@@ -84,7 +151,6 @@ export default {
 
 
 <style lang="less" scoped>
-
 .login-wrapper {
   border: 1px solid #00bd85;
   margin: 35px 0 10px;

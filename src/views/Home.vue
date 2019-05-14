@@ -123,8 +123,11 @@ export default {
 
 .pos-absolute-information {
   position: absolute;
-  bottom: 40px;
-  left: 40px;
+  bottom: 20px;
+  right: 30px;
+  background: #fff;
+  border-top-left-radius: 40px;
+  padding: 10px;
 }
 
   .home {
@@ -140,6 +143,8 @@ export default {
     // height: 30vh;
     padding: 35px;
     margin: 10px 50px;
+    z-index: 200;
+    background: #fff;
 
     h1 {
       line-height: 41px;
