@@ -54,6 +54,10 @@ import "firebase/auth";
 
 export default {
   name: "navigation",
+  props: {
+    lastResult: Number,
+    bestResult: Number
+  },
   data: function() {
     return {
       isVisible: false,

@@ -266,12 +266,21 @@ export default {
       });
 
       let result = (_myTrueAnswers.length / _trueAnswers.length) * 100;
-      localStorage.setItem("last-result", result);
-      localStorage.setItem("best-result", result);
       
+      let userInfo = {
+        userID: localStorage.getItem("id"),
+        result: result
+      }
 
-      this.$store.dispatch("SET_RESULT_DATABASE").then(() => {
-        console.log("results added");
+      localStorage.setItem("last-result", result);
+
+      this.$store.dispatch("GET_DATABASE", userInfo.userID).then((userData)=> {
+        console.log(userData.lastResult);
+        console.log(result);
+        if (userData.lastResult < result) {
+          this.$store.dispatch("UPDATE_BEST_RESULT_DATABASE", userInfo).then(()=>console.log('best result updated'));
+        }
+        this.$store.dispatch("UPDATE_RESULT_DATABASE", userInfo).then(()=>console.log('result updated'));
       });
 
       return result;

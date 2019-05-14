@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import frontend from "./data/frontend";
-// import backend from "./data/backend";
+import backend from "./data/backend";
 
 import * as firebase from "firebase/app";
 
@@ -176,23 +176,55 @@ export default new Vuex.Store({
     UPDATE_RESULT_DATABASE: ({
       commit,
       dispatch
-    }) => {
+    }, userInfo) => {
       let database = firebase.database();
 
       return new Promise((resolve, reject) => {
-        let lastResult = localStorage.getItem("last-result") || null;
-        let bestResultTest = localStorage.getItem("best_result") || null;
 
         firebase
           .database()
-          .ref("users/" + localStorage.getItem("id"))
+          .ref("users/" + userInfo.userID)
           .update({
-            result_test: lastResult, // нужно добавить результат теста в локалстораже в test.js
-            best_result_test: bestResultTest // нужно добавить результат теста в локалстораже в test.js
+            lastResult: userInfo.result, // нужно добавить результат теста в локалстораже в test.js
           })
           .then(() => {
             resolve();
           });
+      });
+    },
+
+    UPDATE_BEST_RESULT_DATABASE: ({
+      commit,
+      dispatch
+    }, userInfo) => {
+      let database = firebase.database();
+  
+      return new Promise((resolve, reject) => {
+
+        firebase
+          .database()
+          .ref("users/" + userInfo.userID)
+          .update({
+            bestResultTest: userInfo.result // нужно добавить результат теста в локалстораже в test.js
+          })
+          .then(() => {
+            resolve();
+          });
+      });
+    },
+
+    GET_ALL_USERS: ({commit}) => {
+      let database = firebase.database();
+  
+      return new Promise((resolve, reject) => {
+
+        firebase
+          .database()
+          .ref("/")
+          .once("value")
+          .then(users => {
+            resolve(users.val());
+          })
       });
     },
 
