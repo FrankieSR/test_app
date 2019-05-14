@@ -1,9 +1,7 @@
 <template>
   <div class="choiseSertification">
     <Navigation/>
-    <div v-if="isVisible">
-      <Loader />
-    </div>
+    <Loader v-if="isVisible"/>
     <div class="test-options">
       <div class="input-group">
         <label for="sort_questions"><i class="fas fa-random"> </i> Sort Questions?</label>

@@ -101,9 +101,6 @@ import store from "../store";
 import { mapGetters, mapState } from "vuex";
 import Navigation from "../components/Navigation.vue";
 import * as firebase from "firebase/app";
-
-// Add the Firebase products that you want to use
-
 import "firebase/database";
 
 export default {
@@ -185,29 +182,33 @@ export default {
       return needOption.length;
     },
     sortRandomQuestions: function() {
-      let _list = this.allQuestionsList;
+      return new Promise((resolve, reject) => {
+        let _list = this.allQuestionsList;
 
-      // можно отключить рандомную сортировку вопросов
-      let _array = [];
-      for (const _key in _list) {
-        if (_list.hasOwnProperty(_key)) {
-          _list[_key].choise.forEach(option => {
-            option.myAnswer = false;
-          });
-          if (this.randomOptCheckbox === true) {
-            _list[_key].choise.sort((a, b) => Math.random() - 0.5); // можно поставить опцию сортировки вариантов ответов
+        // можно отключить рандомную сортировку вопросов
+        let _array = [];
+        for (const _key in _list) {
+          if (_list.hasOwnProperty(_key)) {
+            _list[_key].choise.forEach(option => {
+              option.myAnswer = false;
+            });
+            if (this.randomOptCheckbox === true) {
+              _list[_key].choise.sort((a, b) => Math.random() - 0.5); // можно поставить опцию сортировки вариантов ответов
+            }
+            _array.push(_list[_key]);
           }
-          _array.push(_list[_key]);
         }
-      }
 
-      if (this.randomQCheckbox === true) {
-        this.RandomSortedQuestionList = _array.sort(
-          (a, b) => Math.random() - 0.5
-        );
-      } else {
-        this.RandomSortedQuestionList = _list;
-      }
+        if (this.randomQCheckbox === true) {
+          this.RandomSortedQuestionList = _array.sort(
+            (a, b) => Math.random() - 0.5
+          );
+        } else {
+          this.RandomSortedQuestionList = _list;
+        }
+
+        resolve();
+      });
     },
     nextQuestion() {
       if (this.questionIndex <= this.allQuestionsLength()) {
@@ -228,10 +229,14 @@ export default {
     },
 
     resetArray() {
-      this.RandomSortedQuestionList.forEach(item => {
-        item.choise.forEach(option => {
-          option.myAnswer = false;
+      return new Promise((resolve, reject) => {
+        this.RandomSortedQuestionList.forEach(item => {
+          item.choise.forEach(option => {
+            option.myAnswer = false;
+          });
         });
+
+        resolve();
       });
     },
 
@@ -261,17 +266,14 @@ export default {
       });
 
       let result = (_myTrueAnswers.length / _trueAnswers.length) * 100;
-      let database = firebase.database();
+      localStorage.setItem("last-result", result);
+      localStorage.setItem("best-result", result);
+      
 
-      firebase
-        .database()
-        .ref("users/" + localStorage.getItem('id'))
-        .set({
-          username: localStorage.getItem('name'),
-          email: localStorage.getItem('email'),
-          profile_picture: localStorage.getItem('photoURL'),
-          result_test: result
-        });
+      this.$store.dispatch("SET_RESULT_DATABASE").then(() => {
+        console.log("results added");
+      });
+
       return result;
     },
 
@@ -288,23 +290,14 @@ export default {
     },
     watchResults() {
       this.seenResults = !this.seenResults;
-    },
-    ifPageReload() {
-      if (localStorage.getItem("reloadPage")) {
-        this.$router.push("/");
-        localStorage.removeItem("reloadPage");
-      }
     }
   },
-  mounted() {
-    this.resetArray();
-
-    this.sortRandomQuestions();
+  beforeMount() {
     this.consoleMessage();
-
-    window.onbeforeunload = function(e) {
-      localStorage.setItem("reloadPage", true);
-    };
+  },
+  mounted() {
+    this.resetArray().then(() => this.sortRandomQuestions());
+    
   }
 };
 </script>

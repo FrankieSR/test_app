@@ -63,6 +63,7 @@ import Login from "./Login.vue";
 import Loader from "../components/Loader.vue";
 import Navigation from "../components/Navigation.vue";
 import ChoiseSertification from "../views/ChoiseSertification.vue";
+import store from "../store.js";
 
 export default {
   components: {
@@ -108,7 +109,13 @@ export default {
         this.isVisible = false;
         this.$router.push("/choise-certification");
       }, 500);
+    },
+    seenDB: function() {
+      // this.$store.dispatch("GET_DATABASE").then((data)=> console.log(data));
     }
+  },
+  mounted() {
+    this.seenDB();
   }
 };
 </script>

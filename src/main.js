@@ -5,7 +5,7 @@ import store from "./store";
 import * as firebase from "firebase/app";
 import * as firebaseDB from "firebase/app";
 import firebaseConfig from "./data/firebaseConfig.js";
-import databaseConfig from "./data/databaseConfig.js";
+// import databaseConfig from "./data/databaseConfig.js";
 import "firebase/auth";
 import "firebase/database";
 // firebaseDB.initializeApp(databaseConfig);

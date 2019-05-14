@@ -44,10 +44,7 @@
 import store from "../store";
 import { mapGetters } from "vuex";
 import Loader from "../components/Loader.vue";
-// Firebase App (the core Firebase SDK) is always required and must be listed first
 import * as firebase from "firebase/app";
-
-// Add the Firebase products that you want to use
 import "firebase/auth";
 import "firebase/database";
 
@@ -66,75 +63,23 @@ export default {
   methods: {
     login: function() {
       const { password } = this;
+      const self = this;
 
-      this.$store.dispatch("AUTH_REQUEST", { password }).then(() => {
-        // if (this.ifSave) {
-        //   localStorage.setItem("username", this.username);
-        // }
-
-        this.googleAuth();
-
-      });
+      this.$store
+        .dispatch("AUTH_REQUEST", {
+          password
+        })
+        .then(() => {
+          this.$store.dispatch("SET_DEFAULT_DATABASE").then((data) => {
+            console.log("data added");
+            console.log(data);
+          });
+          self.$router.push("/choise-certification");
+        });
     },
     saveCustomer: function() {
       console.log(this.ifSave);
       this.ifSave = !this.ifSave;
-    },
-    googleAuth: function() {
-      let self = this;
-      var database = firebase.database();
-      let provider = new firebase.auth.GoogleAuthProvider();
-
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then(function(result) {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          var token = result.credential.accessToken;
-          // The signed-in user info.
-          var user = result.user;
-          // console.log(user);
-
-          self.$store.dispatch("SET_USER_INFO", user);
-                  let database = firebase.database();
-
-        // var userId = firebase.auth().currentUser.;
-        return firebase
-          .database()
-          .ref("/users/" + user.uid)
-          .once("value")
-          .then(function(snapshot) {
-            console.log(snapshot.val());
-            self.$router.push("/choise-certification");
-          });
-          
-        })
-        .catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // The email of the user's account used.
-          var email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential;
-          self.$store.dispatch("AUTH_LOGOUT");
-          // ...
-        });
-    },
-    writeUserData: function(userId, name, email, imageUrl) {
-      firebase
-        .database()
-        .ref("users/" + userId)
-        .set({
-          username: name,
-          email: email,
-          profile_picture: imageUrl
-        });
-    },
-    setInfoUser: function(token, name, photo) {
-      localStorage.setItem("user-token", token);
-      localStorage.setItem("name", username);
-      localStorage.setItem("photoURL", user.photo);
     }
   },
   computed: {
