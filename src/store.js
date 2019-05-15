@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import frontend from "./data/frontend";
-import backend from "./data/backend";
+// import backend from "./data/backend";
 
 import * as firebase from "firebase/app";
 

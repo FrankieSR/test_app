@@ -116,9 +116,14 @@ a {
 }
 
 .user-link {
+    flex-basis: 40%;
+    text-align: center;
+    display: flex;
+
   div {
     color: black;
     cursor: pointer;
+    margin: 0 auto;
   }
 }
 
@@ -134,6 +139,16 @@ a {
   font-size: 20px;
   align-items: center;
   font-family: "Share Tech Mono", monospace;
+  text-align: left;
+
+  .logo-wrapper,
+  .auth-button-wrapper {
+    flex-basis: 30%;
+  }
+
+  .auth-button-wrapper {
+    text-align: right;
+  }
 }
 
 .account-info {
@@ -146,8 +161,9 @@ a {
   img {
     width: 50%;
     border-radius: 50%;
-    border: 4px solid #fec82f;
+    border: 3px solid #fec82f;
     box-sizing: border-box;
+    box-shadow: 1px 1px 8px rgb(66, 65, 65);
   }
 
   .name {

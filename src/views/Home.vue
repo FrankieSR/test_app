@@ -51,20 +51,7 @@
         <!-- можно добавить логаут -->
       </div>
     </div>
-    <div class="pos-absolute-information" v-if="isAuthenticated">
-      <div class="info">
-        <div class="top-results">
-          <h3>Top users:</h3>
-          <table>
-            <tr v-for="(user, i) in allUsers" :key="user.id">
-              <td class="index">{{i+1}}</td>
-              <td class="username">{{user.user}}</td>
-              <td class="score">{{user.score}}%</td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
+    <Rating />
   </div>
 </template>
 
@@ -74,6 +61,7 @@ import Login from "./Login.vue";
 import Loader from "../components/Loader.vue";
 import Navigation from "../components/Navigation.vue";
 import ChoiseSertification from "../views/ChoiseSertification.vue";
+import Rating from "../components/Rating.vue";
 import store from "../store.js";
 
 export default {
@@ -81,7 +69,8 @@ export default {
     Login,
     Loader,
     Navigation,
-    ChoiseSertification
+    ChoiseSertification,
+    Rating
   },
   name: "home",
   data: function() {
@@ -90,7 +79,8 @@ export default {
       isVisible: false,
       lastResult: 0,
       bestResult: 0,
-      allUsers: []
+      allUsers: [],
+      openIcon: false
     };
   },
   computed: {
@@ -104,12 +94,13 @@ export default {
       this.isDisplay = !this.isDisplay;
     },
     isUserName: function() {
-      if (localStorage.getItem("username")) {
-        return localStorage.getItem("username");
+      if (localStorage.getItem("name")) {
+        return localStorage.getItem("name");
       } else {
         return "_User";
       }
     },
+
     logout: function() {
       this.isVisible = true;
       setTimeout(() => {
@@ -134,50 +125,6 @@ export default {
           self.bestResult = data.bestResultTest;
         }
       });
-    },
-    getUsers: function() {
-      return new Promise((resolve, reject) => {
-        const self = this;
-
-        this.$store.dispatch("GET_ALL_USERS").then(data => {
-          resolve(data.users);
-        });
-      });
-    },
-
-    sortUsers: function() {
-      const self = this;
-      let _users;
-
-      this.getUsers().then(users => {
-        let _nameAndResult = [];
-        // self.allUsers = users;
-        _users = { ...users };
-
-        for (const key in _users) {
-          if (_users.hasOwnProperty(key)) {
-            const user = _users[key];
-            // console.log(user.email);
-
-            _nameAndResult.push({
-              user: user.username,
-              score: user.bestResultTest
-            });
-          }
-        }
-
-        let _sorted = _nameAndResult.sort((a, b) => {
-          if (a.score > b.score) {
-            return -1;
-          }
-          if (a.score < b.score) {
-            return 1;
-          }
-          return 0;
-        });
-
-        self.allUsers = _sorted;
-      });
     }
   },
   computed: {
@@ -187,7 +134,6 @@ export default {
     })
   },
   mounted() {
-    this.sortUsers();
     this.getResults();
   }
 };
@@ -200,49 +146,7 @@ export default {
   background-position: 100% 100%;
   background-size: content;
   position: relative;
-
-  .pos-absolute-information {
-    position: absolute;
-    border: 5px solid #60605f;
-    bottom: 20px;
-    right: 30px;
-    background: #fff;
-    border-top-left-radius: 40px;
-    padding: 20px 10px 20px 20px;
-    min-height: 60vh;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 4px 0px,
-      rgba(0, 0, 0, 0.6) 0px 2px 15px 0px;
-
-    td {
-      text-align: left;
-    }
-
-    tr {
-      &:first-child {
-        font-size: 20px;
-        font-weight: 700;
-        color: #005fd1;
-      }
-    }
-
-    .index {
-      color: #00bd85;
-      font-size: 20px;
-      font-weight: 700;
-      padding: 5px;
-      display: block;
-      width: 20px;
-      text-align: center;
-      border: 2px solid #fec82f;
-      border-radius: 50%;
-    }
-
-    .score {
-    }
-
-    .name {
-    }
-  }
+  overflow-x: hidden;
 
   .home {
     text-align: left;
@@ -297,6 +201,9 @@ export default {
         height: 50px;
       }
     }
+
+    .goToChoiseCert {
+    }
   }
 
   .name {
@@ -309,15 +216,18 @@ export default {
   .last-results {
     display: flex;
     position: absolute;
-    width: 300px;
+    min-width: 550px;
     left: calc(50% - 150px);
-    background-color: #00bd85;
+    background-color: #fff;
+    border: 2px solid black;
     padding: 20px;
     border-bottom-right-radius: 120px;
     border-bottom-left-radius: 120px;
     justify-content: space-around;
-    font-size: 16px;
-    font-weight: 700;
+    font-family: "Share Tech Mono", monospace;
+    border-bottom: 4px solid red;
+    font-size: 18px;
+    letter-spacing: -1px;
   }
 }
 </style>

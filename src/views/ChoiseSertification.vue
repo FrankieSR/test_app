@@ -29,6 +29,7 @@
         <button @click="startTest('solution')">Start Test <i class="fas fa-play"></i></button>
       </div>
     </div>
+    <Rating />
   </div>
 </template>
 
@@ -37,12 +38,14 @@ import Navigation from "../components/Navigation.vue";
 import store from "../store";
 import Loader from "../components/Loader.vue";
 import { setTimeout } from 'timers';
+import Rating from "../components/Rating.vue";
 
 export default {
   name: "ChoiseSertification",
   components: {
     Navigation,
-    Loader
+    Loader,
+    Rating
   },
   data: function() {
     return {
@@ -80,6 +83,8 @@ export default {
   background-position: 0% 10%;
   background-size: 100%;
   height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .test-options {
@@ -112,7 +117,7 @@ export default {
     padding: 20px 0;
     flex-basis: 20%;
     margin: 20px;
-    transition: 0.2s;
+    transition: .5s cubic-bezier(.25,.45,.52,.95);
     height: 280px;
     border: 4px solid #20a8fa;
     background: rgba(255, 255, 255, 0.8);
@@ -143,7 +148,7 @@ export default {
       font-weight: 700;
       font-size: 14px;
       font-family: "Share Tech Mono", monospace;
-      transition: 0.3s;
+      transition: .5s cubic-bezier(.25,.45,.52,.95);
       position: absolute;
       bottom: 30px;
       left: 15%;
