@@ -1,26 +1,26 @@
 <template>
-  <div class="home-page">
+  <div class="homepage-wrapper">
     <Navigation/>
     <div v-if="isVisible">
       <Loader/>
     </div>
-    <div class="last-results" v-if="lastResult">
-      <span>Last result: {{lastResult}}%</span>
-      <span>Best result: {{bestResult}}%</span>
+    <div class="customer-results" v-if="lastResult != undefined">
+      <span>Last result: {{ lastResult }}%</span>
+      <span>Best result: {{ bestResult }}%</span>
     </div>
-    <div class="home">
+    <div class="homepage-enter">
       <div v-if="!isAuthenticated">
         <h1>
           Hello
-          <span>{{ isUserName()}}</span>(:
+          <span>{{ isUserName() }}</span>(:
         </h1>
         <p>
           Welcome to page.
           <br>To start testing your knowledge, pls log in.
         </p>
-        <div class="login-wrapper">
+        <div class="homepage-login">
           <div>
-            <button class="open-login" @click="openLogin()">
+            <button class="show-login-button" @click="showLoginBlock()">
               <span v-if="!isDisplay">
                 Open Log In
                 <i class="fas fa-caret-up"></i>
@@ -40,18 +40,16 @@
         <h1>
           What’s up!
           <br>
-          <span class="name">{{isUserName()}} :)</span>
+          <span class="name">{{ isUserName() }} :)</span>
         </h1>
         <h2>Choose a test that you want to try your hand at:</h2>
-        <button class="goToChoiseCert open-login" @click="goToSertific">
+        <button class="show-login-button" @click="goToCertification">
           Go To Choise Test
           <i class="fas fa-caret-right"></i>
         </button>
-        <!-- нужно добавить отображение если авторизирован -->
-        <!-- можно добавить логаут -->
       </div>
     </div>
-    <Rating />
+    <Rating/>
   </div>
 </template>
 
@@ -60,7 +58,6 @@ import { mapGetters, mapState } from "vuex";
 import Login from "./Login.vue";
 import Loader from "../components/Loader.vue";
 import Navigation from "../components/Navigation.vue";
-import ChoiseSertification from "../views/ChoiseSertification.vue";
 import Rating from "../components/Rating.vue";
 import store from "../store.js";
 
@@ -69,7 +66,6 @@ export default {
     Login,
     Loader,
     Navigation,
-    ChoiseSertification,
     Rating
   },
   name: "home",
@@ -77,22 +73,17 @@ export default {
     return {
       isDisplay: false,
       isVisible: false,
+      openIcon: false,
       lastResult: 0,
       bestResult: 0,
-      allUsers: [],
-      openIcon: false
+      allUsers: []
     };
   },
-  computed: {
-    ...mapGetters(["isAuthenticated", "authStatus"]),
-    loading: function() {
-      return this.authStatus === "loading";
-    }
-  },
   methods: {
-    openLogin: function() {
+    showLoginBlock: function() {
       this.isDisplay = !this.isDisplay;
     },
+
     isUserName: function() {
       if (localStorage.getItem("name")) {
         return localStorage.getItem("name");
@@ -103,44 +94,56 @@ export default {
 
     logout: function() {
       this.isVisible = true;
+
       setTimeout(() => {
         this.isVisible = false;
         this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
       }, 500);
     },
-    goToSertific: function() {
+
+    goToCertification: function() {
       this.isVisible = true;
+
       setTimeout(() => {
         this.isVisible = false;
         this.$router.push("/choise-certification");
       }, 500);
     },
-    getResults: function() {
-      const userID = localStorage.getItem("id");
-      const self = this;
 
-      this.$store.dispatch("GET_DATABASE", userID).then(data => {
+    getResultsScore: function() {
+      const _userID = localStorage.getItem("id"),
+            _self = this;
+
+      this.$store.dispatch("GET_DATABASE", _userID).then(data => {
         if (data) {
-          self.lastResult = data.lastResult;
-          self.bestResult = data.bestResultTest;
+          _self.lastResult = data.lastResult;
+          _self.bestResult = data.bestResultTest;
         }
       });
     }
   },
   computed: {
-    ...mapGetters(["getProfile", "isAuthenticated", "isProfileLoaded"]),
+    ...mapGetters([
+      "getProfile",
+      "isAuthenticated",
+      "isProfileLoaded",
+      "authStatus"
+    ]),
     ...mapState({
-      authLoading: state => state.authStatus === "loading"
+      authLoading: state => state.authStatus === "loading",
+      loading: function() {
+        return this.authStatus === "loading";
+      }
     })
   },
   mounted() {
-    this.getResults();
+    this.getResultsScore();
   }
 };
 </script>
 
-<style  lang="less" scoped>
-.home-page {
+<style lang="less" scoped>
+.homepage-wrapper {
   min-height: 100vh;
   background: url("../assets/banner-2.png") no-repeat;
   background-position: 100% 100%;
@@ -148,7 +151,7 @@ export default {
   position: relative;
   overflow-x: hidden;
 
-  .home {
+  .homepage-enter {
     text-align: left;
     border: 1px solid black;
     border-left: 3px solid black;
@@ -182,7 +185,7 @@ export default {
       position: relative;
     }
 
-    .open-login {
+    .show-login-button {
       width: 100%;
       height: 40px;
       border: none;
@@ -201,9 +204,6 @@ export default {
         height: 50px;
       }
     }
-
-    .goToChoiseCert {
-    }
   }
 
   .name {
@@ -213,7 +213,7 @@ export default {
     margin-bottom: 20px;
   }
 
-  .last-results {
+  .customer-results {
     display: flex;
     position: absolute;
     min-width: 550px;

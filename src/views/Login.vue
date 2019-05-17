@@ -1,30 +1,25 @@
 <template>
-  <div class="login-page">
-    <div class="login-wrapper">
+  <div class="login-block">
+    <div class="login-block-wrapper">
       <p>
         Please enter
-        <br>
+        <br />
         <strong>password that was provided to you</strong>
       </p>
-      <form class="login" @submit.prevent="login">
-        <div class="input-wrapper">
-          <!-- <label for="username">Your name</label> -->
-          <!-- <div class="input-group">
-            <input required v-model="username" id="username" type="text" placeholder="Your Name">
-            <i class="fas fa-user-circle"></i>
-          </div>-->
+      <form class="login-block-form" @submit.prevent="login">
+        <div class="login-input-wrapper">
           <label for="password">Password</label>
-          <div class="input-group">
-            <input required v-model="password" id="password" type="text" placeholder="Password">
+          <div class="login-input-group">
+            <input id="password"
+                  required
+                  v-model="password"
+                  type="text"
+                  placeholder="Password"/>
             <i class="fas fa-lock"></i>
           </div>
-          <!-- <div class="input-group">
-            <label for="save_customer">Save name?</label>
-            <input type="checkbox" @click="saveCustomer" v-model="ifSave" id="save_customer">
-          </div>-->
         </div>
-        <div class="buton-wrapper">
-          <Loader v-if="loading"/>
+        <div class="login-buton-wrapper">
+          <Loader v-if="loading" />
           <div v-else>
             <button type="submit">
               <span>Enter</span>
@@ -41,10 +36,9 @@
 </template>
 
 <script>
-import store from "../store";
 import { mapGetters } from "vuex";
+import store from "../store";
 import Loader from "../components/Loader.vue";
-import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
@@ -63,23 +57,17 @@ export default {
   methods: {
     login: function() {
       const { password } = this;
-      const self = this;
+      const _self = this;
 
       this.$store
         .dispatch("AUTH_REQUEST", {
           password
         })
         .then(() => {
-          this.$store.dispatch("SET_DEFAULT_DATABASE").then((data) => {
-            console.log("data added");
-            console.log(data);
+          this.$store.dispatch("SET_DEFAULT_DATABASE").then(data => {
+            _self.$router.push("/choise-certification");
           });
-          self.$router.push("/choise-certification");
         });
-    },
-    saveCustomer: function() {
-      console.log(this.ifSave);
-      this.ifSave = !this.ifSave;
     }
   },
   computed: {
@@ -94,9 +82,8 @@ export default {
 };
 </script>
 
-
 <style lang="less" scoped>
-.login-wrapper {
+.login-block-wrapper {
   border: 1px solid #00bd85;
   margin: 35px 0 10px;
   width: 320px;
@@ -107,7 +94,7 @@ export default {
     text-align: center;
   }
 
-  .input-wrapper {
+  .login-input-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;

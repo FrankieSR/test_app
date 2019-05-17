@@ -1,13 +1,19 @@
 <template>
   <div class="account">
     <div class="wrapper">
-      <Navigation/>
+      <Navigation />
       <h1>This page is under construction.</h1>
-	  	<div class="info-wrapper">
-		  	<span>Contacts:</span> <br/>
-			<span><i class="fab fa-skype"></i> jamessvanilla</span><br/>
-			<span><a href="https://github.com/FrankieSR/test_app"><i class="fab fa-github-square"></i> CODE</a> - Here is the project code, I will be glad if you offer something of your own or fix something already existing</span>
-		</div>
+      <div class="info-wrapper">
+        <span>Contacts:</span> <br />
+        <span><i class="fab fa-skype"></i> jamessvanilla</span><br />
+        <span
+          ><a href="https://github.com/FrankieSR/test_app"
+            ><i class="fab fa-github-square"></i> CODE</a
+          >
+          - Here is the project code, I will be glad if you offer something of
+          your own or fix something already existing</span
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -33,26 +39,26 @@ export default {
   font-size: 30px;
   color: red;
 
-h1 {
-	font-family: "Share Tech Mono", monospace;
-}
+  h1 {
+    font-family: "Share Tech Mono", monospace;
+  }
 
   .info-wrapper {
-	  width: 70%;
-	  margin: 20px auto;
-	  text-align: left;
-	  color: black;
-	  background: rgba(41, 198, 154, 0.4);
-	  padding: 20px;
-	  border-top: 12px solid #00A9FF;
-	  border-bottom: 12px solid #fff;
-	  border-right: 12px solid #FFC600;
+    width: 70%;
+    margin: 20px auto;
+    text-align: left;
+    color: black;
+    background: rgba(41, 198, 154, 0.4);
+    padding: 20px;
+    border-top: 12px solid #00a9ff;
+    border-bottom: 12px solid #fff;
+    border-right: 12px solid #ffc600;
   }
 
   span {
-	  margin-bottom: 10px;
-	  line-height: 22px;
-	  display: block;
+    margin-bottom: 10px;
+    line-height: 22px;
+    display: block;
   }
 }
 </style>

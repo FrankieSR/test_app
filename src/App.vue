@@ -22,10 +22,10 @@ export default {
       window.innerWidth < 1200
         ? (this.ifVisible = true)
         : (this.ifVisible = false);
-      console.log(this.ifVisible);
+
       window.addEventListener("resize", function() {
         if (window.innerWidth < 1200) {
-          return this.ifVisible = true;
+          return (this.ifVisible = true);
         }
       });
     }
@@ -35,7 +35,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang="less">
 #app {
