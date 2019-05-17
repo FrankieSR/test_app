@@ -1,32 +1,52 @@
 <template>
   <div class="choiseSertification">
-    <Navigation/>
-    <Loader v-if="isVisible"/>
+    <Navigation />
+    <Loader v-if="isVisible" />
     <div class="test-options">
       <div class="input-group">
-        <label for="sort_questions"><i class="fas fa-random"> </i> Sort Questions?</label>
-        <input type="checkbox" @click="changeConditionQuestions" v-model="ifSortQuestions" id="sort_questions">
+        <label for="sort_questions"
+          ><i class="fas fa-random"> </i> Sort Questions?</label
+        >
+        <input
+          type="checkbox"
+          @click="changeConditionQuestions"
+          v-model="ifSortQuestions"
+          id="sort_questions"
+        />
       </div>
       <div class="input-group">
-        <label for="sort_options"><i class="fas fa-random"></i> Sort Question Options? </label>
-        <input type="checkbox" @click="changeConditionOptions" v-model="ifSortOptions" id="sort_options">
+        <label for="sort_options"
+          ><i class="fas fa-random"></i> Sort Question Options?
+        </label>
+        <input
+          type="checkbox"
+          @click="changeConditionOptions"
+          v-model="ifSortOptions"
+          id="sort_options"
+        />
       </div>
     </div>
     <div class="choiseSertification-wrapper">
       <div class="frontend item">
         <span>Frontend Developer</span>
-        <img src="../assets/front-end-developers-openings-1.gif" alt="image">
-        <button @click="startTest('frontend')">Start Test <i class="fas fa-play"></i></button>
+        <img src="../assets/front-end-developers-openings-1.gif" alt="image" />
+        <button @click="startTest('frontend')">
+          Start Test <i class="fas fa-play"></i>
+        </button>
       </div>
       <div class="backend item">
         <span>Backend Developer</span>
-        <img src="../assets/expert-developers.gif" alt="image">
-        <button @click="startTest('backend')">Start Test <i class="fas fa-play"></i></button>
+        <img src="../assets/expert-developers.gif" alt="image" />
+        <button @click="startTest('backend')">
+          Start Test <i class="fas fa-play"></i>
+        </button>
       </div>
       <div class="asociate item">
         <span>Project managers</span>
-        <img src="../assets/giphyp.gif" alt="image">
-        <button @click="startTest('solution')">Start Test <i class="fas fa-play"></i></button>
+        <img src="../assets/giphyp.gif" alt="image" />
+        <button @click="startTest('solution')">
+          Start Test <i class="fas fa-play"></i>
+        </button>
       </div>
     </div>
     <Rating />
@@ -37,7 +57,7 @@
 import Navigation from "../components/Navigation.vue";
 import store from "../store";
 import Loader from "../components/Loader.vue";
-import { setTimeout } from 'timers';
+import { setTimeout } from "timers";
 import Rating from "../components/Rating.vue";
 
 export default {
@@ -52,22 +72,20 @@ export default {
       ifSortQuestions: true,
       ifSortOptions: true,
       isVisible: false
-    }
+    };
   },
   methods: {
     startTest: function(route) {
       this.isVisible = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.isVisible = false;
         this.$store.dispatch("CHOISE_TEST", route).then(() => {
           this.$router.push("/test/" + route);
         });
       }, 500);
-
     },
     changeConditionOptions: function() {
       this.$store.dispatch("SORT_OPTIONS");
-      
     },
     changeConditionQuestions: function() {
       this.$store.dispatch("SORT_QUESTIONS");
@@ -88,7 +106,7 @@ export default {
 }
 
 .test-options {
-  background: #00BD85;
+  background: #00bd85;
   margin: 0 auto 20px;
   width: 50%;
   height: 35px;
@@ -117,7 +135,7 @@ export default {
     padding: 20px 0;
     flex-basis: 20%;
     margin: 20px;
-    transition: .5s cubic-bezier(.25,.45,.52,.95);
+    transition: 0.5s cubic-bezier(0.25, 0.45, 0.52, 0.95);
     height: 280px;
     border: 4px solid #20a8fa;
     background: rgba(255, 255, 255, 0.8);
@@ -148,7 +166,7 @@ export default {
       font-weight: 700;
       font-size: 14px;
       font-family: "Share Tech Mono", monospace;
-      transition: .5s cubic-bezier(.25,.45,.52,.95);
+      transition: 0.5s cubic-bezier(0.25, 0.45, 0.52, 0.95);
       position: absolute;
       bottom: 30px;
       left: 15%;

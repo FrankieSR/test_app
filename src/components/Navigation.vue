@@ -1,5 +1,6 @@
 <template>
   <div class="navigation">
+    <Loader v-if="isVisible"/>
     <div class="logo-wrapper">
       <router-link to="/">
         <span>
@@ -8,24 +9,21 @@
         </span>
       </router-link>
     </div>
-    <div v-if="isVisible">
-      <Loader/>
-    </div>
-    <div v-if="isProfileLoaded" class="user-link">
+    <div v-if="isProfileLoaded" class="navigation-account-link">
       <router-link tag="div" to="/account">
-        <div class="account-info" v-if="isAuthenticated">
+        <div class="user-info" v-if="isAuthenticated">
           <div class="name">
             <span>Hello</span>
-            {{name}}
+            {{ name }}
           </div>
           <div class="user-image">
-            <img v-bind:src="imageSRC" alt="icon">
+            <img v-bind:src="imageSRC" alt="icon" />
           </div>
           <span>GL HF</span>
         </div>
       </router-link>
     </div>
-    <div class="auth-button-wrapper">
+    <div class="auth-button-group">
       <div v-if="isAuthenticated" @click="logout">
         <span class="logout">
           Logout
@@ -44,20 +42,15 @@
   </div>
 </template>
 
-
 <script>
 import { mapGetters, mapState } from "vuex";
+import * as firebase from "firebase/app";
 import store from "../store.js";
 import Loader from "../components/Loader.vue";
-import * as firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
   name: "navigation",
-  props: {
-    lastResult: Number,
-    bestResult: Number
-  },
   data: function() {
     return {
       isVisible: false,
@@ -70,16 +63,16 @@ export default {
   },
   methods: {
     logout: function() {
-      const self = this;
+      const _self = this;
 
       this.isVisible = true;
       setTimeout(() => {
         firebase
           .auth()
           .signOut()
-          .then(function() {
+          .then(() => {
             // можно добавить евент, когда кастомер разлогинился
-            self.isVisible = false;
+            _self.isVisible = false;
           })
           .catch(function(error) {
             console.log(error);
@@ -88,10 +81,12 @@ export default {
         this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
       }, 500);
     },
-    isUserName: function() {
+
+    getUsername: function() {
       this.name = localStorage.getItem("name");
     },
-    isUserImage: function() {
+
+    getUserImage: function() {
       this.imageSRC = localStorage.getItem("photoURL");
     }
   },
@@ -102,12 +97,11 @@ export default {
     })
   },
   mounted() {
-    this.isUserName();
-    this.isUserImage();
+    this.getUsername();
+    this.getUserImage();
   }
 };
 </script>
-
 
 <style lang="less" scoped>
 a {
@@ -115,10 +109,10 @@ a {
   text-decoration: none;
 }
 
-.user-link {
-    flex-basis: 40%;
-    text-align: center;
-    display: flex;
+.navigation-account-link {
+  flex-basis: 40%;
+  text-align: center;
+  display: flex;
 
   div {
     color: black;
@@ -142,16 +136,16 @@ a {
   text-align: left;
 
   .logo-wrapper,
-  .auth-button-wrapper {
+  .auth-button-group {
     flex-basis: 30%;
   }
 
-  .auth-button-wrapper {
+  .auth-button-group {
     text-align: right;
   }
 }
 
-.account-info {
+.user-info {
   display: flex;
   align-items: center;
 

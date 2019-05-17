@@ -1,33 +1,40 @@
 <template>
-  <div id="app">
-    <Navigation/>
-    <div class="application-wrapper">
+  <div class="test-page">
+    <Navigation />
+    <div class="test-page-wrapper">
       <div class="timeline">
-        <div class="timeline-inner" v-bind:style="{width: testInfo() + '%'}"></div>
+        <div
+          class="timeline-inner"
+          v-bind:style="{ width: testInfo() + '%' }"
+        ></div>
       </div>
       <div v-if="questionIndex < allQuestionsLength()">
         <span class="to-end">
-          {{questionIndex +1 }} / {{allQuestionsLength()}}
+          {{ questionIndex + 1 }} / {{ allQuestionsLength() }}
           <i class="fas fa-ruler-horizontal"></i>
         </span>
       </div>
-      <div class="question-list" v-if="questionIndex < allQuestionsLength()">
+      <div class="test-questions-list" v-if="questionIndex < allQuestionsLength()">
         <div
           v-for="(question, index) in RandomSortedQuestionList"
           v-bind:key="index"
-          class="question-body"
+          class="question-list-body"
           v-if="index == questionIndex"
         >
-          <h3 class="question" ref="question">{{question.question}}</h3>
+          <h3 class="question" ref="question">{{ question.question }}</h3>
           <ul>
             <li
               v-for="(choise, choiseIndex) in question.choise"
               v-bind:key="choiseIndex"
               @click="checkAnswer($event)"
               :data="choise.index"
-            >{{choiseIndex +1}} : {{choise.option}}</li>
+            >
+              {{ choiseIndex + 1 }} : {{ choise.option }}
+            </li>
           </ul>
-          <div class="need-answers">You need to select {{needAnswers()}} answer.</div>
+          <div class="quantity-answers">
+            You need to select {{ needAnswers() }} answer.
+          </div>
           <div class="control-buttons">
             <button class="prev" @click="previousQuestion">
               <i class="fas fa-caret-left"></i> Prev
@@ -45,48 +52,49 @@
             <div class="result">
               Hey! You are cool!
               <i class="far fa-grin-stars"></i>
-              <br>Your result
-              <span>{{testResult().toFixed(0)}}</span>%
-              <img src="../assets/giphy.gif" alt="image">
+              <br />Your result <span>{{ testResult().toFixed(0) }}</span
+              >%
+              <img src="../assets/giphy.gif" alt="image" />
             </div>
           </div>
           <div class="result-wrapper" v-else>
             <div class="result fail">
               Oh
-              <i class="far fa-frown"></i> You must study more!
-              <br>Your result
-              <span>{{testResult().toFixed()}}</span>%
+              <i class="far fa-frown"></i> You must study more! <br />Your
+              result <span>{{ testResult().toFixed() }}</span
+              >%
             </div>
             <!-- <img src="../assets/expert-developers.gif" alt="image"> -->
           </div>
-          <div class="account-information">
-            <div class="logout">
+          <div class="retest-block">
+            <div class="retest-button">
               <button @click="restart">
                 New test
                 <i class="fas fa-retweet"></i>
               </button>
             </div>
-            <!-- <div class="account">
-              <img src="../assets/child-1837375_960_720.png" alt="image">
-              _User
-            </div>-->
           </div>
         </div>
         <div class="buttons">
-          <button class="open-results" @click="watchResults()">
+          <button class="watch-results" @click="watchResults()">
             Watch results
             <i class="fas fa-eye"></i>
           </button>
         </div>
-        <div class="see-results" v-show="seenResults">
-          <div v-for="(question, index) in RandomSortedQuestionList" v-bind:key="index">
-            {{question.question}}
+        <div class="results-infornation" v-show="seenResults">
+          <div
+            v-for="(question, index) in RandomSortedQuestionList"
+            v-bind:key="index"
+          >
+            {{ question.question }}
             <ul>
               <li
                 v-for="(choise, choiseIndex) in question.choise"
                 v-bind:key="choiseIndex"
                 v-bind:class="paintResultList(choise.isTrue, choise.myAnswer)"
-              >{{choiseIndex +1}} : {{choise.option}}</li>
+              >
+                {{ choiseIndex + 1 }} : {{ choise.option }}
+              </li>
             </ul>
           </div>
         </div>
@@ -100,7 +108,7 @@ import { setInterval, clearInterval } from "timers";
 import store from "../store";
 import { mapGetters, mapState } from "vuex";
 import Navigation from "../components/Navigation.vue";
-import * as firebase from "firebase/app";
+// import * as firebase from "firebase/app";
 import "firebase/database";
 
 export default {
@@ -129,10 +137,11 @@ export default {
     logout: function() {
       this.$store.dispatch("AUTH_LOGOUT").then(() => this.$router.push("/"));
     },
+
     restart: function() {
       this.$router.push("/choise-certification");
     },
-    //methods for start page
+
     testInfo() {
       // this.$nextTick(function() {
       //   if (
@@ -154,7 +163,7 @@ export default {
         "background: #f6c2d8; color: #7babed; font-size: 35px;"
       );
     },
-    // methods for tests
+
     checkAnswer(event) {
       let optionIndex = parseInt(event.target.getAttribute("data"));
       // debugger;
@@ -182,7 +191,7 @@ export default {
       return needOption.length;
     },
     sortRandomQuestions: function() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         let _list = this.allQuestionsList;
 
         // можно отключить рандомную сортировку вопросов
@@ -229,7 +238,7 @@ export default {
     },
 
     resetArray() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.RandomSortedQuestionList.forEach(item => {
           item.choise.forEach(option => {
             option.myAnswer = false;
@@ -247,8 +256,8 @@ export default {
       let _trueAnswers = [];
       let _myAnswer = [];
       let _myTrueAnswers = [];
-      this.RandomSortedQuestionList.forEach((element, index) => {
-        element.choise.forEach((choiseInfo, choiseIndex) => {
+      this.RandomSortedQuestionList.forEach((element) => {
+        element.choise.forEach((choiseInfo) => {
           if (choiseInfo.isTrue == true) {
             _trueAnswers.push(choiseInfo.isTrue);
           }
@@ -266,21 +275,21 @@ export default {
       });
 
       let result = (_myTrueAnswers.length / _trueAnswers.length) * 100;
-      
+
       let userInfo = {
         userID: localStorage.getItem("id"),
         result: result
-      }
+      };
 
       localStorage.setItem("last-result", result);
 
-      this.$store.dispatch("GET_DATABASE", userInfo.userID).then((userData)=> {
-        console.log(userData.lastResult);
-        console.log(result);
+      this.$store.dispatch("GET_DATABASE", userInfo.userID).then(userData => {
         if (userData.lastResult < result) {
-          this.$store.dispatch("UPDATE_BEST_RESULT_DATABASE", userInfo).then(()=>console.log('best result updated'));
+          this.$store
+            .dispatch("UPDATE_BEST_RESULT_DATABASE", userInfo);
         }
-        this.$store.dispatch("UPDATE_RESULT_DATABASE", userInfo).then(()=>console.log('result updated'));
+        this.$store
+          .dispatch("UPDATE_RESULT_DATABASE", userInfo);
       });
 
       return result;
@@ -306,7 +315,6 @@ export default {
   },
   mounted() {
     this.resetArray().then(() => this.sortRandomQuestions());
-    
   }
 };
 </script>
@@ -387,7 +395,7 @@ label {
   padding: 15px 0 20px;
 }
 
-.application-wrapper {
+.test-page-wrapper {
   position: relative;
   margin: 15px auto;
   width: 80%;
@@ -419,7 +427,7 @@ button {
   font-size: 18px;
 }
 
-.question-body {
+.question-list-body {
   ul {
     margin-bottom: 40px;
   }
@@ -506,7 +514,7 @@ button {
   }
 }
 
-.account-information {
+.retest-block {
   max-width: 200px;
   background: #00a263;
   height: 130px;
@@ -576,7 +584,7 @@ button {
   display: flex;
   justify-content: space-around;
 }
-.open-results {
+.watch-results {
   width: 70%;
   margin: 0 auto;
   height: 40px;
@@ -597,7 +605,7 @@ button {
     height: 50px;
   }
 }
-.see-results {
+.results-infornation {
   margin: 30px auto;
   font-weight: 600;
   font-size: 20px;
@@ -635,7 +643,7 @@ button {
   right: 10px;
   z-index: 2;
 }
-.need-answers {
+.quantity-answers {
   display: inline-block;
   border: 2px solid red;
   margin: 5px 0;

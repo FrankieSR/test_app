@@ -1,17 +1,17 @@
 <template>
-  <div class="pos-absolute-information" ref="rating" @click="openTopUsers" v-if="isAuthenticated">
-    <div class="open-icon">
+  <div class="rating-wrapper" ref="rating" @click="toggleRatingBlock" v-if="isAuthenticated">
+    <div class="rating-open">
       <i class="fas fa-angle-double-right" v-if="openIcon"></i>
       <i class="fas fa-angle-double-left" v-else></i>
     </div>
-    <div class="info">
-      <div class="top-results">
+    <div class="rating-info">
+      <div class="rating-top">
         <h3>Top users:</h3>
         <table>
           <tr v-for="(user, i) in allUsers" :key="user.id">
-            <td class="index">{{i+1}}</td>
-            <td class="username">{{user.user}}</td>
-            <td class="score">{{user.score}}%</td>
+            <td class="index">{{ i + 1 }}</td>
+            <td class="username">{{ user.user }}</td>
+            <td class="score">{{ user.score }}%</td>
           </tr>
         </table>
       </div>
@@ -24,7 +24,6 @@ import { mapGetters, mapState } from "vuex";
 
 export default {
   name: "Rating",
-  props: {},
   data: function() {
     return {
       openIcon: false,
@@ -32,14 +31,13 @@ export default {
     };
   },
   methods: {
-    openTopUsers: function() {
+    toggleRatingBlock: function() {
       this.$refs.rating.classList.toggle("open");
       this.openIcon = !this.openIcon;
     },
-    getUsers: function() {
-      return new Promise((resolve, reject) => {
-        const self = this;
 
+    getUsers: function() {
+      return new Promise(resolve => {
         this.$store.dispatch("GET_ALL_USERS").then(data => {
           resolve(data.users);
         });
@@ -47,18 +45,17 @@ export default {
     },
 
     sortUsers: function() {
-      const self = this;
+      const _self = this;
       let _users;
 
       this.getUsers().then(users => {
         let _nameAndResult = [];
-        // self.allUsers = users;
+
         _users = { ...users };
 
         for (const key in _users) {
           if (_users.hasOwnProperty(key)) {
             const user = _users[key];
-            // console.log(user.email);
 
             _nameAndResult.push({
               user: user.username,
@@ -77,7 +74,7 @@ export default {
           return 0;
         });
 
-        self.allUsers = _sorted;
+        _self.allUsers = _sorted;
       });
     }
   },
@@ -95,7 +92,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-.pos-absolute-information {
+.rating-wrapper {
   position: absolute;
   bottom: 20px;
   right: -335px;
@@ -113,7 +110,7 @@ export default {
     rgba(0, 0, 0, 0.3) 0px 1px 20px 3px;
   transition: 0.4s cubic-bezier(0.25, 0.45, 0.52, 0.95);
 
-  .open-icon {
+  .rating-open {
     position: absolute;
     left: 10px;
     top: 10px;
@@ -159,7 +156,7 @@ export default {
   }
 }
 
-  .open {
-    right: 20px !important;
-  }
+.open {
+  right: 20px !important;
+}
 </style>
