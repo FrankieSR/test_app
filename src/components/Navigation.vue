@@ -24,6 +24,9 @@
       </router-link>
     </div>
     <div class="auth-button-group">
+      <div class="search-block" v-if="isAuthenticated && visible">
+        <Search />
+      </div>
       <div v-if="isAuthenticated" @click="logout">
         <span class="logout">
           Logout
@@ -47,6 +50,7 @@ import { mapGetters, mapState } from "vuex";
 import * as firebase from "firebase/app";
 import store from "../store.js";
 import Loader from "../components/Loader.vue";
+import Search from "../components/Search.vue";
 import "firebase/auth";
 
 export default {
@@ -59,7 +63,8 @@ export default {
     };
   },
   components: {
-    Loader
+    Loader,
+    Search
   },
   methods: {
     logout: function() {
@@ -110,7 +115,7 @@ a {
 }
 
 .navigation-account-link {
-  flex-basis: 40%;
+  flex-basis: 30%;
   text-align: center;
   display: flex;
 
@@ -135,13 +140,18 @@ a {
   font-family: "Share Tech Mono", monospace;
   text-align: left;
 
-  .logo-wrapper,
-  .auth-button-group {
+  .logo-wrapper {
+    display: flex;
+    justify-content: space-between;
     flex-basis: 30%;
   }
 
   .auth-button-group {
+    flex-basis: 40%;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 
