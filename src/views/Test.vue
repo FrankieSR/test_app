@@ -1,6 +1,6 @@
 <template>
   <div class="test-page">
-    <Navigation />
+    <Navigation visible="false"/>
     <div class="test-page-wrapper">
       <div class="timeline">
         <div

@@ -218,7 +218,7 @@ export default {
   .customer-results {
     display: flex;
     position: absolute;
-    min-width: 550px;
+    min-width: 390px;
     left: calc(50% - 150px);
     background-color: #fff;
     border: 2px solid black;
