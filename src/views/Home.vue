@@ -49,6 +49,7 @@
         </button>
       </div>
     </div>
+    <h2 class="info-message" v-if="messageVisible">There may be some bugs in the project. If you find, please inform me. <i class="fa fa-times" aria-hidden="true" @click="messageVisible = false"></i></h2>
     <Rating/>
   </div>
 </template>
@@ -76,7 +77,8 @@ export default {
       openIcon: false,
       lastResult: 0,
       bestResult: 0,
-      allUsers: []
+      allUsers: [],
+      messageVisible: true
     };
   },
   methods: {
@@ -228,6 +230,23 @@ export default {
     border-bottom: 4px solid red;
     font-size: 18px;
     letter-spacing: -1px;
+  }
+}
+
+.info-message {
+  border: 3px solid red;
+  position: absolute;
+  padding: 2px 15px;
+  bottom: 10px;left: 15px;
+  background: #fdc730;
+
+  i {
+    color: red;
+    position: relative;
+    bottom: -2px;
+    left: 43px;
+    font-size: 30px;
+    cursor: pointer;
   }
 }
 </style>

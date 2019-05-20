@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="banner" v-if="ifVisible">
+    <div class="banner">
       <h1>Please open on a device with a screen width of more than 1200px</h1>
     </div>
     <router-view/>
@@ -11,28 +11,7 @@
 import Navigation from "./components/Navigation.vue";
 
 export default {
-  name: "app",
-  data: function() {
-    return {
-      ifVisible: false
-    };
-  },
-  methods: {
-    resize() {
-      window.innerWidth < 1200
-        ? (this.ifVisible = true)
-        : (this.ifVisible = false);
-
-      window.addEventListener("resize", function() {
-        if (window.innerWidth < 1200) {
-          return (this.ifVisible = true);
-        }
-      });
-    }
-  },
-  mounted() {
-    this.resize();
-  }
+  name: "app"
 };
 </script>
 
@@ -45,6 +24,7 @@ export default {
 }
 
 .banner {
+  display: none;
   position: fixed;
   min-height: 100%;
   width: 100%;
@@ -58,7 +38,12 @@ export default {
 body {
   padding: 0;
   margin: 0;
-
   -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 1200px) { 
+  .banner {
+    display: block;
+  }
 }
 </style>

@@ -2,7 +2,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import frontend from "./data/frontend";
-// import backend from "./data/backend";
+import backend from "./data/backend";
+import solution from "./data/solution";
 
 import * as firebase from "firebase/app";
 
@@ -237,10 +238,10 @@ export default new Vuex.Store({
         commit("SET_TEST", frontend);
       }
       if (testName == "backend") {
-        // commit("SET_TEST", backend);
+        commit("SET_TEST", backend);
       }
       if (testName == "solution") {
-        // commit("SET_TEST", solution);
+        commit("SET_TEST", solution);
       }
     },
 

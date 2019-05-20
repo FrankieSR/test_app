@@ -11,7 +11,7 @@
           <tr v-for="(user, i) in allUsers" :key="user.id">
             <td class="index">{{ i + 1 }}</td>
             <td class="username">{{ user.user }}</td>
-            <td class="score">{{ user.score }}%</td>
+            <td class="score">{{ user.score.toFixed(2) }}%</td>
           </tr>
         </table>
       </div>
