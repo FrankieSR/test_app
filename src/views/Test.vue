@@ -1,12 +1,9 @@
 <template>
   <div class="test-page">
-    <Navigation visible="false"/>
+    <Navigation v-bind:isVisibleSearch="false"/>
     <div class="test-page-wrapper">
       <div class="timeline">
-        <div
-          class="timeline-inner"
-          v-bind:style="{ width: testInfo() + '%' }"
-        ></div>
+        <div class="timeline-inner" v-bind:style="{ width: testInfo() + '%' }"></div>
       </div>
       <div v-if="questionIndex < allQuestionsLength()">
         <span class="to-end">
@@ -28,13 +25,9 @@
               v-bind:key="choiseIndex"
               @click="checkAnswer($event)"
               :data="choise.index"
-            >
-              {{ choiseIndex + 1 }} : {{ choise.option }}
-            </li>
+            >{{ choiseIndex + 1 }} : {{ choise.option }}</li>
           </ul>
-          <div class="quantity-answers">
-            You need to select {{ needAnswers() }} answer.
-          </div>
+          <div class="quantity-answers">You need to select {{ needAnswers() }} answer.</div>
           <div class="control-buttons">
             <button class="prev" @click="previousQuestion">
               <i class="fas fa-caret-left"></i> Prev
@@ -52,19 +45,20 @@
             <div class="result">
               Hey! You are cool!
               <i class="far fa-grin-stars"></i>
-              <br />Your result <span>{{ testResult().toFixed(0) }}</span
-              >%
-              <img src="../assets/giphy.gif" alt="image" />
+              <br>Your result
+              <span>{{ testResult().toFixed(0) }}</span>%
+              <img src="../assets/giphy.gif" alt="image">
             </div>
           </div>
           <div class="result-wrapper" v-else>
             <div class="result fail">
               Oh
-              <i class="far fa-frown"></i> You must study more! <br />Your
-              result <span>{{ testResult().toFixed() }}</span
-              >%
+              <i class="far fa-frown"></i> You must study more!
+              <br>Your
+              result
+              <span>{{ testResult().toFixed() }}</span>%
             </div>
-            <!-- <img src="../assets/expert-developers.gif" alt="image"> -->
+            <img class="result-fail-img" src="https://i.gifer.com/76et.gif" alt="image">
           </div>
           <div class="retest-block">
             <div class="retest-button">
@@ -82,19 +76,14 @@
           </button>
         </div>
         <div class="results-infornation" v-show="seenResults">
-          <div
-            v-for="(question, index) in RandomSortedQuestionList"
-            v-bind:key="index"
-          >
+          <div v-for="(question, index) in RandomSortedQuestionList" v-bind:key="index">
             {{ question.question }}
             <ul>
               <li
                 v-for="(choise, choiseIndex) in question.choise"
                 v-bind:key="choiseIndex"
                 v-bind:class="paintResultList(choise.isTrue, choise.myAnswer)"
-              >
-                {{ choiseIndex + 1 }} : {{ choise.option }}
-              </li>
+              >{{ choiseIndex + 1 }} : {{ choise.option }}</li>
             </ul>
           </div>
         </div>
@@ -110,6 +99,7 @@ import { mapGetters, mapState } from "vuex";
 import Navigation from "../components/Navigation.vue";
 // import * as firebase from "firebase/app";
 import "firebase/database";
+import { closeSync, close } from "fs";
 
 export default {
   name: "Test",
@@ -191,7 +181,7 @@ export default {
       return needOption.length;
     },
     sortRandomQuestions: function() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         let _list = this.allQuestionsList;
 
         // можно отключить рандомную сортировку вопросов
@@ -238,7 +228,7 @@ export default {
     },
 
     resetArray() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.RandomSortedQuestionList.forEach(item => {
           item.choise.forEach(option => {
             option.myAnswer = false;
@@ -253,44 +243,55 @@ export default {
       return Object.keys(this.allQuestionsList).length;
     },
     testResult() {
-      let _trueAnswers = [];
-      let _myAnswer = [];
       let _myTrueAnswers = [];
-      this.RandomSortedQuestionList.forEach((element) => {
-        element.choise.forEach((choiseInfo) => {
-          if (choiseInfo.isTrue == true) {
-            _trueAnswers.push(choiseInfo.isTrue);
+
+      this.RandomSortedQuestionList.forEach(element => {
+        let _correctAnswer = [];
+        let _isTrue = [];
+        let _myAnswer = [];
+
+        element.choise.forEach(choiseItem => {
+          if (choiseItem.isTrue === true) {
+            _isTrue.push("isTrue");
           }
-          if (choiseInfo.myAnswer == true) {
-            _myAnswer.push(choiseInfo.myAnswer);
-            if (
-              choiseInfo.myAnswer == true &&
-              choiseInfo.isTrue == true &&
-              _trueAnswers.length == _myAnswer.length
-            ) {
-              _myTrueAnswers.push(1);
-            }
+
+          if (choiseItem.myAnswer === true) {
+            _myAnswer.push("my answer");
+          }
+
+          if (choiseItem.isTrue === true && choiseItem.myAnswer === true) {
+            _correctAnswer.push("my correct answer");
           }
         });
+
+        if (
+          _correctAnswer.length === _isTrue.length &&
+          _myAnswer.length === _correctAnswer.length
+        ) {
+          _myTrueAnswers.push(1);
+        }
       });
 
-      let result = (_myTrueAnswers.length / _trueAnswers.length) * 100;
+      let result =
+        (_myTrueAnswers.length / this.RandomSortedQuestionList.length) * 100;
 
       let userInfo = {
         userID: localStorage.getItem("id"),
         result: result
       };
 
-      localStorage.setItem("last-result", result);
+      if (result) {
+        localStorage.setItem("last-result", result);
+      }
 
-      this.$store.dispatch("GET_DATABASE", userInfo.userID).then(userData => {
-        if (userData.lastResult < result) {
-          this.$store
-            .dispatch("UPDATE_BEST_RESULT_DATABASE", userInfo);
-        }
-        this.$store
-          .dispatch("UPDATE_RESULT_DATABASE", userInfo);
-      });
+      if (localStorage.getItem("changedTest") != undefined) {
+        this.$store.dispatch("GET_DATABASE", userInfo.userID).then(userData => {
+          if (userData.lastResult < result) {
+            this.$store.dispatch("UPDATE_BEST_RESULT_DATABASE", userInfo);
+          }
+          this.$store.dispatch("UPDATE_RESULT_DATABASE", userInfo);
+        });
+      }
 
       return result;
     },
@@ -314,7 +315,17 @@ export default {
     this.consoleMessage();
   },
   mounted() {
+    let _self = this;
     this.resetArray().then(() => this.sortRandomQuestions());
+    window.addEventListener("beforeunload", () => {
+      localStorage.removeItem("changedTest");
+    });
+  },
+  beforeCreate() {
+    let _test = localStorage.getItem("changedTest");
+    if (_test == undefined) {
+      this.$router.push("/choise-certification");
+    }
   }
 };
 </script>
@@ -393,6 +404,10 @@ label {
 .list-tests {
   font-weight: bold;
   padding: 15px 0 20px;
+}
+
+.result-fail-img {
+  margin: 20px auto 0;
 }
 
 .test-page-wrapper {

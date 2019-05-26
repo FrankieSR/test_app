@@ -2,9 +2,17 @@
   <div class="search-block" ref="search" v-if="isAuthenticated">
     <div class="input-group">
       <input type="text" v-model.lazy="search" placeholder="Search Your Question">
-      <button @click="searchQuestion()" class="search-button">Search</button>
+      <button class="search-button" @click="openSearch">
+        <span v-if="searchButtonOpen">Search <i class="fas fa-angle-double-down"></i></span>
+        <span v-else>Close <i class="fas fa-angle-double-up"></i></span>
+      </button>
+      <div class="change-search-test" ref="searchButton">
+        <button @click="searchQuestion('frontend')">Frontend</button>
+        <button @click="searchQuestion('backend')">Backend</button>
+        <button @click="searchQuestion('solution')">Solution</button>
+      </div>
     </div>
-    <div class="search-result-list">
+    <div class="search-result-list" ref="listSearch">
       <ul v-if="inputTextLenght">
         <li v-for="(question, i) in sortedList" :key="i">
           <h5 @click="showSearchBlock($event)" class="search-title">{{question.question}}</h5>
@@ -23,7 +31,9 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
-import questions from "../data/frontend";
+import questionsF from "../data/frontend";
+import questionsB from "../data/backend";
+import questionsS from "../data/solution";
 
 export default {
   name: "Search",
@@ -35,27 +45,47 @@ export default {
       search: "",
       questions: [],
       show: false,
-      sortedList: []
+      sortedList: [],
+      searchButtonOpen: false
     };
   },
   methods: {
-    createArray() {
-      for (const key in questions) {
-        if (questions.hasOwnProperty(key)) {
-          const element = questions[key];
+    createArray(questionsList) {
+      for (const key in questionsList) {
+        if (questionsList.hasOwnProperty(key)) {
+          const element = questionsList[key];
           this.questions.push(element);
         }
       }
     },
 
     showSearchBlock(elem) {
-      console.log(elem.toElement.parentNode.children);
       elem.toElement.parentNode.children[1].classList.toggle("active");
     },
-    searchQuestion() {
+    searchQuestion(questionsList) {
+      this.questions = [];
+
+      if (questionsList == "frontend") {
+        this.createArray(questionsF);
+      }
+      if (questionsList == "backend") {
+        this.createArray(questionsB);
+      }
+      if (questionsList == "solution") {
+        this.createArray(questionsS);
+      }
+
       this.sortedList = this.questions.filter(
         item => item.question.indexOf(this.search) !== -1
       );
+    },
+
+    openSearch() {
+      this.$refs.searchButton.classList.toggle("change-search-open");
+
+      this.$refs.searchButton.classList.contains("change-search-open")
+        ? (this.searchButtonOpen = true)
+        : (this.searchButtonOpen = false);
     }
   },
   filters: {},
@@ -66,15 +96,11 @@ export default {
     }),
     inputTextLenght() {
       if (this.search.length < 2) {
-        console.log(this.search);
         return false;
       }
 
       return true;
     }
-  },
-  mounted() {
-    this.createArray();
   }
 };
 </script>
@@ -92,8 +118,8 @@ export default {
       border: 2px solid #000;
       border-right: none;
       outline: none;
-      padding: 2px 10px 0;
-      width: 400px;
+      padding: 3px 10px 0;
+      width: 70%;
       font-family: "Share Tech Mono", monospace;
     }
 
@@ -120,14 +146,15 @@ export default {
   }
 
   .search-result-list {
-    margin-top: 12px;
+    margin-top: 0px;
     position: absolute;
-    background: #00a8f3;
-    width: 580px;
+    background: #000;
+    width: 640px;
     z-index: 1000;
-    border: 3px solid #000;
-    border-left: 10px solid #00bc87;
-    border-bottom: 1px solid red;
+    right: 150px;
+    top: 35px;
+    border: 5px solid #00bc87;
+    border-bottom: 7px solid #00bc87;
     border-top: none;
     max-height: 600px;
     overflow-y: auto;
@@ -139,14 +166,14 @@ export default {
       li {
         margin-bottom: 5px;
         font-size: 14px;
-        padding: 7px;
+        padding: 2px;
 
         ul {
           background: #ffc54e;
           padding: 0;
           margin: 0;
           max-height: 0;
-          transition: max-height 0.4s cubic-bezier(0.25, 0.45, 0.52, 0.95);
+          transition: max-height 0.5s;
           overflow: hidden;
 
           position: relative;
@@ -179,5 +206,34 @@ export default {
       font-size: 14px;
     }
   }
+}
+
+.change-search-test {
+  position: absolute;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  padding: 3px;
+  border: 10px solid #00bc87;
+  border-top: 0px solid #00bc87;
+  background: black;
+  box-shadow: -1px 12px 8px rgba(0, 0, 0, 0.3);
+  top: -200px;
+  transition: 0.3s;
+  z-index: 1000;
+}
+
+.change-search-open {
+  top: 35px !important;
+}
+
+.message-warning {
+  font-size: 13px;
+  color: red;
+  line-height: 10px;
+  margin: 0;
+  position: relative;
+  top: 3px;
+  letter-spacing: 0.3px;
 }
 </style>

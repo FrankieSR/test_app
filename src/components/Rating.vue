@@ -7,7 +7,7 @@
     <div class="rating-info">
       <div class="rating-top">
         <h3>Top users:</h3>
-        <table>
+        <table class="rating-table">
           <tr v-for="(user, i) in allUsers" :key="user.id">
             <td class="index">{{ i + 1 }}</td>
             <td class="username">{{ user.user }}</td>
@@ -99,7 +99,6 @@ export default {
   background: #fff;
   border-top-left-radius: 40px;
   padding: 20px 25px 20px 20px;
-  min-height: 60vh;
   cursor: pointer;
   border: 3px solid black;
   border-left: 5px solid black;
@@ -109,6 +108,8 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 7px 2px,
     rgba(0, 0, 0, 0.3) 0px 1px 20px 3px;
   transition: 0.4s cubic-bezier(0.25, 0.45, 0.52, 0.95);
+  max-height: 500px;
+  overflow-y: scroll;
 
   .rating-open {
     position: absolute;

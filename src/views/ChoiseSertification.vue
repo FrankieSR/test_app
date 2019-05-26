@@ -1,55 +1,59 @@
 <template>
   <div class="choiseSertification">
-    <Navigation />
-    <Loader v-if="isVisible" />
+    <Navigation/>
+    <LastResults/>
+    <Loader v-if="isVisible"/>
     <div class="test-options">
       <div class="input-group">
-        <label for="sort_questions"
-          ><i class="fas fa-random"> </i> Sort Questions?</label
-        >
+        <label for="sort_questions">
+          <i class="fas fa-random"></i> Sort Questions?
+        </label>
         <input
           type="checkbox"
           @click="changeConditionQuestions"
           v-model="ifSortQuestions"
           id="sort_questions"
-        />
+        >
       </div>
       <div class="input-group">
-        <label for="sort_options"
-          ><i class="fas fa-random"></i> Sort Question Options?
+        <label for="sort_options">
+          <i class="fas fa-random"></i> Sort Question Options?
         </label>
         <input
           type="checkbox"
           @click="changeConditionOptions"
           v-model="ifSortOptions"
           id="sort_options"
-        />
+        >
       </div>
     </div>
     <div class="choiseSertification-wrapper">
       <div class="frontend item">
         <span>Frontend Developer</span>
-        <img src="../assets/front-end-developers-openings-1.gif" alt="image" />
+        <img src="../assets/front-end-developers-openings-1.gif" alt="image">
         <button @click="startTest('frontend')">
-          Start Test <i class="fas fa-play"></i>
+          Start Test
+          <i class="fas fa-play"></i>
         </button>
       </div>
       <div class="backend item">
         <span>Backend Developer</span>
-        <img src="../assets/expert-developers.gif" alt="image" />
+        <img src="../assets/expert-developers.gif" alt="image">
         <button @click="startTest('backend')">
-          Start Test <i class="fas fa-play"></i>
+          Start Test
+          <i class="fas fa-play"></i>
         </button>
       </div>
       <div class="asociate item">
         <span>Project managers</span>
-        <img src="../assets/giphyp.gif" alt="image" />
+        <img src="../assets/giphyp.gif" alt="image">
         <button @click="startTest('solution')">
-          Start Test <i class="fas fa-play"></i>
+          Start Test
+          <i class="fas fa-play"></i>
         </button>
       </div>
     </div>
-    <Rating />
+    <Rating/>
   </div>
 </template>
 
@@ -57,6 +61,7 @@
 import Navigation from "../components/Navigation.vue";
 import store from "../store";
 import Loader from "../components/Loader.vue";
+import LastResults from "../components/LastResults.vue";
 import { setTimeout } from "timers";
 import Rating from "../components/Rating.vue";
 
@@ -65,7 +70,8 @@ export default {
   components: {
     Navigation,
     Loader,
-    Rating
+    Rating,
+    LastResults
   },
   data: function() {
     return {

@@ -9,24 +9,23 @@
         </span>
       </router-link>
     </div>
-    <div v-if="isProfileLoaded" class="navigation-account-link">
-      <router-link tag="div" to="/account">
-        <div class="user-info" v-if="isAuthenticated">
-          <div class="name">
-            <span>Hello</span>
-            {{ name }}
-          </div>
-          <div class="user-image">
-            <img v-bind:src="imageSRC" alt="icon" />
-          </div>
-          <span>GL HF</span>
-        </div>
-      </router-link>
+    <div class="search-block" v-if="isAuthenticated">
+      <Search/>
     </div>
     <div class="auth-button-group">
-      <div class="search-block" v-if="isAuthenticated && visible">
-        <Search />
-      </div>
+      <router-link tag="div" to="/account">
+        <div class="user-info" v-if="isAuthenticated">
+          <span class="name">{{ name }}</span>
+          <div class="user-image">
+            <div v-if="imageSRC">
+              <img v-bind:src="imageSRC" alt="icon">
+            </div>
+            <div v-else>
+              <i class="fas fa-user-circle"></i> 
+            </div>
+          </div>
+        </div>
+      </router-link>
       <div v-if="isAuthenticated" @click="logout">
         <span class="logout">
           Logout
@@ -114,18 +113,6 @@ a {
   text-decoration: none;
 }
 
-.navigation-account-link {
-  flex-basis: 30%;
-  text-align: center;
-  display: flex;
-
-  div {
-    color: black;
-    cursor: pointer;
-    margin: 0 auto;
-  }
-}
-
 .navigation {
   background: #00bd85;
   min-height: 30px;
@@ -143,39 +130,60 @@ a {
   .logo-wrapper {
     display: flex;
     justify-content: space-between;
-    flex-basis: 30%;
+    flex-basis: 20%;
   }
 
   .auth-button-group {
-    flex-basis: 40%;
+    flex-basis: 20%;
     text-align: right;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+  }
+
+  .search-block {
+    flex-basis: 35%;
+  }
+
+  .navigation-account-link {
+    flex-basis: 30%;
+    text-align: center;
+    display: flex;
+
+    div {
+      color: black;
+      cursor: pointer;
+      margin: 0 auto;
+    }
   }
 }
 
 .user-info {
   display: flex;
   align-items: center;
+  cursor: pointer;
+  color: #005fd1;
 
-  .user-image {
-    flex-basis: 20%;
-  }
-  img {
-    width: 50%;
-    border-radius: 50%;
-    border: 3px solid #fec82f;
-    box-sizing: border-box;
-    box-shadow: 1px 1px 8px rgb(66, 65, 65);
+  &:hover {
+    text-decoration: underline;
   }
 
   .name {
-    color: #005fd1;
+    margin-right: 15px;
   }
+}
 
-  span {
-    color: black;
+.user-image {
+  cursor: pointer;
+
+  img {
+    width: 45px;
+    border-radius: 50%;
+    border: 2px solid #fec82f;
+    box-sizing: border-box;
+    margin-right: 10px;
+    box-shadow: 1px 1px 8px rgb(66, 65, 65);
+    transition: 0.3s;
   }
 }
 

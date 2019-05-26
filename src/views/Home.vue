@@ -4,10 +4,7 @@
     <div v-if="isVisible">
       <Loader/>
     </div>
-    <div class="customer-results" v-if="lastResult != undefined">
-      <span>Last result: {{ lastResult }}%</span>
-      <span>Best result: {{ bestResult }}%</span>
-    </div>
+    <LastResults />
     <div class="homepage-enter">
       <div v-if="!isAuthenticated">
         <h1>
@@ -60,6 +57,7 @@ import Login from "./Login.vue";
 import Loader from "../components/Loader.vue";
 import Navigation from "../components/Navigation.vue";
 import Rating from "../components/Rating.vue";
+import LastResults from "../components/LastResults.vue";
 import store from "../store.js";
 
 export default {
@@ -67,7 +65,8 @@ export default {
     Login,
     Loader,
     Navigation,
-    Rating
+    Rating,
+    LastResults
   },
   name: "home",
   data: function() {
@@ -75,8 +74,6 @@ export default {
       isDisplay: false,
       isVisible: false,
       openIcon: false,
-      lastResult: 0,
-      bestResult: 0,
       allUsers: [],
       messageVisible: true
     };
@@ -112,17 +109,7 @@ export default {
       }, 500);
     },
 
-    getResultsScore: function() {
-      const _userID = localStorage.getItem("id"),
-            _self = this;
 
-      this.$store.dispatch("GET_DATABASE", _userID).then(data => {
-        if (data) {
-          _self.lastResult = data.lastResult;
-          _self.bestResult = data.bestResultTest;
-        }
-      });
-    }
   },
   computed: {
     ...mapGetters([
@@ -139,7 +126,7 @@ export default {
     })
   },
   mounted() {
-    this.getResultsScore();
+    
   }
 };
 </script>
@@ -213,23 +200,6 @@ export default {
     border-bottom: 15px solid #fdc730;
     display: block;
     margin-bottom: 20px;
-  }
-
-  .customer-results {
-    display: flex;
-    position: absolute;
-    min-width: 390px;
-    left: calc(50% - 150px);
-    background-color: #fff;
-    border: 2px solid black;
-    padding: 20px;
-    border-bottom-right-radius: 120px;
-    border-bottom-left-radius: 120px;
-    justify-content: space-around;
-    font-family: "Share Tech Mono", monospace;
-    border-bottom: 4px solid red;
-    font-size: 18px;
-    letter-spacing: -1px;
   }
 }
 

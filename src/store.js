@@ -22,7 +22,7 @@ export default new Vuex.Store({
       lastResult: "",
       image: localStorage.getItem("photoURL")
     },
-    questionList: frontend,
+    questionList: '',
     choiseSertificationTest: "",
     randomQuestions: true,
     randomOptions: true
@@ -236,12 +236,15 @@ export default new Vuex.Store({
 
       if (testName == "frontend") {
         commit("SET_TEST", frontend);
+        localStorage.setItem("changedTest", "frontend");
       }
       if (testName == "backend") {
         commit("SET_TEST", backend);
+        localStorage.setItem("changedTest", "backend");
       }
       if (testName == "solution") {
         commit("SET_TEST", solution);
+        localStorage.setItem("changedTest", "solution");
       }
     },
 
