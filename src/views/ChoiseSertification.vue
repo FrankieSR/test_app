@@ -52,6 +52,22 @@
           <i class="fas fa-play"></i>
         </button>
       </div>
+      <div class="asociate item">
+        <span>Coming soon ...</span>
+        <img src="../assets/programmer.gif" alt="image">
+        <button>
+          Start Test
+          <i class="fas fa-hand-paper"></i>
+        </button>
+      </div>
+      <div class="asociate item">
+        <span>Coming soon ...</span>
+        <img src="../assets/developer-dribbble.gif" alt="image">
+        <button>
+          Start Test
+          <i class="fas fa-hand-paper"></i>
+        </button>
+      </div>
     </div>
     <Rating/>
   </div>
@@ -104,8 +120,8 @@ export default {
 <style scoped lang="less">
 .choiseSertification {
   background: url("../assets/case-study-2.png") no-repeat;
-  background-position: 0% 10%;
-  background-size: 100%;
+  background-position: 80% 140%;
+  background-size: 65%;
   height: 100vh;
   position: relative;
   overflow-x: hidden;
@@ -132,17 +148,19 @@ export default {
 
 .choiseSertification-wrapper {
   display: flex;
-  height: 88vh;
-  justify-content: center;
+  height: 80vh;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   align-items: flex-start;
+  margin-top: 40px;
 
   .item {
     position: relative;
     padding: 20px 0;
     flex-basis: 20%;
     margin: 20px;
-    transition: 0.5s cubic-bezier(0.25, 0.45, 0.52, 0.95);
-    height: 280px;
+    transition: 0.3s cubic-bezier(0.25, 0.45, 0.52, 0.95);
+    height: 310px;
     border: 4px solid #20a8fa;
     background: rgba(255, 255, 255, 0.8);
     font-family: "Share Tech Mono", monospace;

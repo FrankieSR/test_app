@@ -194,6 +194,49 @@ export default new Vuex.Store({
       });
     },
 
+    ADD_LINK_TO_DB: ({
+      commit,
+      dispatch
+    }, info) => {
+      let database = firebase.database(),
+          userID = localStorage.getItem("id"),
+          username = localStorage.getItem("name");
+
+      return new Promise(resolve => {
+        firebase
+          .database()
+          .ref("/links/" + username + info._linkID)
+          .set({
+            userID,
+            username,
+            link: info._linkResourse,
+            note: info._noteLink
+          }).then(()=> {
+            resolve();
+          });
+      });
+    },
+
+    GET_LINKs_FROM_DB: ({
+      commit,
+      dispatch
+    }) => {
+      return new Promise((resolve, reject) => {
+
+        firebase
+          .database()
+          .ref("/links/")
+          .once("value")
+          .then(links => {
+            if (links.val()) {
+              resolve(links.val());
+            } else {
+              reject("No Have Links");
+            }
+          })
+      });
+    },
+
     UPDATE_BEST_RESULT_DATABASE: ({
       commit,
       dispatch
@@ -208,9 +251,7 @@ export default new Vuex.Store({
           .update({
             bestResultTest: userInfo.result // нужно добавить результат теста в локалстораже в test.js
           })
-          .then(() => {
-            resolve();
-          });
+          .then(() => resolve());
       });
     },
 

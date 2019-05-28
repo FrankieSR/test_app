@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import Account from "./views/Account.vue";
 import Test from "./views/Test.vue";
 import Login from "./views/Login.vue";
+import Docs from "./views/Docs.vue";
 import ChoiseSertification from "./views/ChoiseSertification.vue";
 import store from "./store";
 
@@ -67,6 +68,12 @@ export default new Router({
       path: "/choise-certification",
       name: "ChoiseSertification",
       component: ChoiseSertification,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/docs",
+      name: "Docs",
+      component: Docs,
       beforeEnter: ifAuthenticated
     }
   ]

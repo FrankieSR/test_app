@@ -136,9 +136,10 @@ export default {
   min-height: 100vh;
   background: url("../assets/banner-2.png") no-repeat;
   background-position: 100% 100%;
-  background-size: content;
+  background-size: 60%;
   position: relative;
   overflow-x: hidden;
+
 
   .homepage-enter {
     text-align: left;

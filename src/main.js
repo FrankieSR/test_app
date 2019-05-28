@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import * as firebase from "firebase/app";
-import * as firebaseDB from "firebase/app";
 import firebaseConfig from "./data/firebaseConfig.js";
 // import databaseConfig from "./data/databaseConfig.js";
 import "firebase/auth";

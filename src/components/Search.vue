@@ -46,7 +46,7 @@ export default {
       questions: [],
       show: false,
       sortedList: [],
-      searchButtonOpen: false
+      searchButtonOpen: true
     };
   },
   methods: {
@@ -82,10 +82,10 @@ export default {
 
     openSearch() {
       this.$refs.searchButton.classList.toggle("change-search-open");
-
+      this.searchButtonOpen = false
       this.$refs.searchButton.classList.contains("change-search-open")
-        ? (this.searchButtonOpen = true)
-        : (this.searchButtonOpen = false);
+        ? (this.searchButtonOpen = false)
+        : (this.searchButtonOpen = true);
     }
   },
   filters: {},

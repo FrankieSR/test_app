@@ -8,7 +8,7 @@
       <div class="rating-top">
         <h3>Top users:</h3>
         <table class="rating-table">
-          <tr v-for="(user, i) in allUsers" :key="user.id">
+          <tr v-for="(user, i) in allUsers" :key="user.id" v-if="i<10">
             <td class="index">{{ i + 1 }}</td>
             <td class="username">{{ user.user }}</td>
             <td class="score">{{ user.score.toFixed(2) }}%</td>
@@ -95,7 +95,7 @@ export default {
 .rating-wrapper {
   position: absolute;
   bottom: 20px;
-  right: -335px;
+  right: -290px;
   background: #fff;
   border-top-left-radius: 40px;
   padding: 20px 25px 20px 20px;
@@ -109,7 +109,6 @@ export default {
     rgba(0, 0, 0, 0.3) 0px 1px 20px 3px;
   transition: 0.4s cubic-bezier(0.25, 0.45, 0.52, 0.95);
   max-height: 500px;
-  overflow-y: scroll;
 
   .rating-open {
     position: absolute;
@@ -129,7 +128,19 @@ export default {
 
   tr {
     &:first-child {
+      font-size: 24px;
+      font-weight: 700;
+      color: #005fd1;
+    }
+
+    &:nth-child(2) {
       font-size: 22px;
+      font-weight: 700;
+      color: #005fd1;
+    }
+
+    &:nth-child(3) {
+      font-size: 20px;
       font-weight: 700;
       color: #005fd1;
     }
@@ -158,6 +169,6 @@ export default {
 }
 
 .open {
-  right: 20px !important;
+  right: 0px !important;
 }
 </style>

@@ -12,6 +12,9 @@
     <div class="search-block" v-if="isAuthenticated">
       <Search/>
     </div>
+    <router-link tag="div" to="/docs">
+      <span class="link-to-docs">Docs</span>
+    </router-link>
     <div class="auth-button-group">
       <router-link tag="div" to="/account">
         <div class="user-info" v-if="isAuthenticated">
@@ -21,7 +24,7 @@
               <img v-bind:src="imageSRC" alt="icon">
             </div>
             <div v-else>
-              <i class="fas fa-user-circle"></i> 
+              <i class="fas fa-user-circle"></i>
             </div>
           </div>
         </div>
@@ -134,7 +137,7 @@ a {
   }
 
   .auth-button-group {
-    flex-basis: 20%;
+    flex-basis: 25%;
     text-align: right;
     display: flex;
     align-items: center;
@@ -198,5 +201,12 @@ a {
       text-transform: uppercase;
     }
   }
+}
+
+.link-to-docs {
+  cursor: pointer;
+  padding: 2px 25px;
+  background: #fff;
+  border: 1px solid #fec82f;
 }
 </style>
